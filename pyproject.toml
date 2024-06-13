@@ -21,11 +21,16 @@ readme = "README.rst"
 keywords = ["Climate", "Zarr", "ETL", "IPFS"]
 requires-python = ">=3.10"
 dependencies = [
+    "numpy",
     "pyyaml",
+    "xarray",
 ]
 
 [project.urls]
 Homepage = "https://www.dclimate.net/"
+
+[project.entry-points.extractor]
+testing = "tests.unit.conftest:extractor_entry_point"
 
 [project.optional-dependencies]
 testing = [
@@ -43,13 +48,13 @@ doc = [
     "sphinx",
 ]
 all = [
-    "dc-provisioning[dev,testing,ovh,doc]",
+    "dc-etl[dev,testing,doc]",
 ]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
 local_scheme = "no-local-version"
-write_to = "dc_provisioning/_version.py"
+write_to = "dc_etl/_version.py"
 
 [tool.black]
 line-length = 119
