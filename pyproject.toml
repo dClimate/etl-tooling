@@ -1,0 +1,60 @@
+# pyproject.toml
+[project]
+name = "dc-etl"
+dynamic = ["version"]
+authors = [
+    { name = "Chris Rossi", email = "chris@christophermrossi.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Atmospheric Science"
+]
+description = "Tools for loading climate data into IPFS clusters"
+readme = "README.rst"
+keywords = ["Climate", "Zarr", "ETL", "IPFS"]
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml",
+]
+
+[project.urls]
+Homepage = "https://www.dclimate.net/"
+
+[project.optional-dependencies]
+testing = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+]
+dev = [
+    "black",
+    "flake8",
+    "flake8-pyproject",
+    "nox",
+]
+doc = [
+    "sphinx",
+]
+all = [
+    "dc-provisioning[dev,testing,ovh,doc]",
+]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+write_to = "dc_provisioning/_version.py"
+
+[tool.black]
+line-length = 119
+
+[tool.flake8]
+# flake8 and black disagree on E203, E701, and W503
+ignore = ["E203", "E701", "W503"]
+max-line-length = 119
