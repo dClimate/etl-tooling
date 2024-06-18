@@ -2,3 +2,6 @@
 *.egg-info
 .coverage
 __pycache__
+
+venv*
+pyrightconfig.json
