@@ -1,0 +1,4 @@
+---
+datasets:
+- name: a bad entry
+  cluster: bomb
