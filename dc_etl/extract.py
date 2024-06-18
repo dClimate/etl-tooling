@@ -4,7 +4,6 @@ import typing
 import numpy
 import xarray
 
-
 class Timespan(typing.NamedTuple):
     start: numpy.datetime64
     end: numpy.datetime64
@@ -13,6 +12,7 @@ class Timespan(typing.NamedTuple):
 class Extractor(abc.ABC):
     """A component responsible for downloading data from a data source and providing it to a Transformer."""
 
+    @abc.abstractmethod
     def get_remote_timespan(self) -> Timespan:
         """Get the timespan available remotely for this dataset.
 
@@ -25,6 +25,7 @@ class Extractor(abc.ABC):
             Timespan including the first and last timestamps available in the source data.
         """
 
+    @abc.abstractmethod
     def get_local_timespans(self) -> list[Timespan]:
         """Get all of the timespans that have been downloaded and are available locally.
 
@@ -37,6 +38,7 @@ class Extractor(abc.ABC):
 
         """
 
+    @abc.abstractmethod
     def download(self, span: Timespan):
         """Download any files from the remote data provider corresponding to the given timespan.
 
@@ -49,6 +51,7 @@ class Extractor(abc.ABC):
         nothing if all data for the given timespan is already downloaded.
         """
 
+    @abc.abstractmethod
     def extract(self, span: Timespan) -> typing.Generator[xarray.Dataset, None, None]:
         """Extract any files from the remote data provider corresponding to the given timespan.
 
