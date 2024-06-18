@@ -4,6 +4,7 @@ import typing
 import numpy
 import xarray
 
+
 class Timespan(typing.NamedTuple):
     start: numpy.datetime64
     end: numpy.datetime64
