@@ -84,3 +84,26 @@ class TestFileSpec:
 
         assert file.open("r").read().strip() == "Hi Mom!"
         assert file.exists()
+
+    @staticmethod
+    def test_with_suffix():
+        file = filespec.FileSpec(None, "some/thing.foo").with_suffix("bar")
+        assert file.path == "some/thing.bar"
+
+    @staticmethod
+    def test_with_suffix_no_suffix():
+        file = filespec.FileSpec(None, "some/thing").with_suffix(".bar")
+        assert file.path == "some/thing.bar"
+
+    @staticmethod
+    def test_with_suffix_no_suffix_but_dot_in_parent():
+        file = filespec.FileSpec(None, "so.me/thing").with_suffix("bar")
+        assert file.path == "so.me/thing.bar"
+
+    @staticmethod
+    def test_name():
+        assert filespec.FileSpec(None, "some/thing").name == "thing"
+
+    @staticmethod
+    def test_name_no_parent():
+        assert filespec.FileSpec(None, "thing").name == "thing"

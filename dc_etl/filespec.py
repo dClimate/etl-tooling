@@ -33,6 +33,41 @@ class FileSpec(typing.NamedTuple):
         """A passthrough to `fsspec.AbstractFilesystem.open` using the path from this instance."""
         return self.fs.open(self.path, mode)
 
+    def with_suffix(self, suffix: str) -> FileSpec:
+        """Returns a new FileSpec with the file suffix changed to `suffix`.
+
+        If there is no file suffix, one is added.
+
+        Parameters
+        ----------
+        suffix : str
+            The new file suffix
+
+        Returns
+        -------
+        FileSpec
+            The new file spec
+        """
+        path = self.path
+        dot = path.rfind(".")
+        if dot > -1:
+            sep = path.rfind("/")
+            # make sure dot isn't in a parent folder before truncating old suffix
+            if sep < dot:
+                path = path[:dot]
+
+        return FileSpec(self.fs, f"{path}.{suffix.lstrip('.')}")
+
+    @property
+    def name(self) -> str:
+        """The name of the file or directory pointed to by this spec, without any parent folders."""
+        path = self.path.rstrip("/")
+        sep = path.rfind("/")
+        if sep > -1:
+            return path[sep + 1 :]
+
+        return path
+
     def __truediv__(self, other: str) -> FileSpec:
         """Overloads the `/` (division) operator to allow new paths to be created by appending new path elements,
         much as `pathlib.Path` does in the standard library.

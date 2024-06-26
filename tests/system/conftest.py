@@ -1,5 +1,6 @@
-import fsspec
 import pathlib
+
+import fsspec
 import pytest
 
 from dc_etl.filespec import FileSpec

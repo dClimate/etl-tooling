@@ -9,3 +9,10 @@ datasets:
       fs: file
       path: some/path/to/somewhere
       auto_mkdir: True
+
+  extractor:
+    name: netcdf
+    inline_threshold: 42
+    output_folder: !filespec
+      fs: file
+      path: output/folder

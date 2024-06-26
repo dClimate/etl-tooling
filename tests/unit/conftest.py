@@ -7,8 +7,6 @@ from unittest import mock
 import pytest
 import xarray
 
-from dc_etl.fetch import Fetcher
-
 
 @pytest.fixture(autouse=True)
 def use_this_folder_as_cwd_for_tests():
@@ -24,10 +22,10 @@ def use_this_folder_as_cwd_for_tests():
     os.chdir(prev)
 
 
-def fetcher_entry_point(**config):
-    fetcher = mock.Mock(spec=Fetcher)
-    fetcher.__dict__.update(config)
-    return fetcher
+def mock_entry_point(**config):
+    component = mock.Mock()
+    component.__dict__.update(config)
+    return component
 
 
 class MockFilesystem:
@@ -58,6 +56,7 @@ def mock_dataset(data, dims):
     name, data = data
     data = xarray.DataArray(data, dims=coord_names, coords=coords)
     ds = xarray.Dataset({name: data})
+
     buf = io.BytesIO()
     serialized = ds.to_netcdf(buf)
     return serialized
