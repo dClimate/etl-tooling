@@ -8,6 +8,7 @@ import nox
 ALL_INTERPRETERS = (
     "3.10",
     "3.11",
+    "3.12",
 )
 CODE = "dc_etl"
 DEFAULT_INTERPRETER = "3.10"
@@ -56,6 +57,23 @@ def run_black(session, check=False):
         args.append("--check")
     args.extend(["noxfile.py", CODE, "tests"])
     session.run(*args)
+
+
+@nox.session(py=DEFAULT_INTERPRETER)
+def system(session):
+    # if not check_kubo():
+    #     session.skip("No IPFS server running")
+
+    session.install("-e", ".[testing]")
+    session.run(
+        "pytest",
+        "--cov=tests.system",
+        "--cov-config",
+        HERE / ".coveragerc",
+        "--cov-report=term-missing",
+        "--cov-fail-under=100",
+        "tests/system",
+    )
 
 
 # @nox.session(py=DEFAULT_INTERPRETER)

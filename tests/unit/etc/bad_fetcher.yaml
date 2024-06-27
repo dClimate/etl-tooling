@@ -1,0 +1,5 @@
+---
+datasets:
+- name: a bad entry
+  fetcher:
+    name: does not exist

@@ -1,7 +1,0 @@
----
-datasets:
-- name: a bad entry
-  cluster: bomb
-  extractor:
-    name: does not exist
-    config: {}

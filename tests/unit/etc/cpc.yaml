@@ -1,0 +1,11 @@
+---
+datasets:
+- name: cpc_precip_global
+
+  fetcher:
+    name: cpc
+    dataset: global_precip
+    cache: !filespec
+      fs: file
+      path: some/path/to/somewhere
+      auto_mkdir: True
