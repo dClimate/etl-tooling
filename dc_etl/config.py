@@ -10,7 +10,6 @@ import yaml
 
 from . import errors
 from .dataset import Dataset
-from .fetch import Fetcher
 from .filespec import FileSpec
 
 CONFIG_FILE = "datasets.yaml"
@@ -38,17 +37,18 @@ class Configuration:
 
 
 def _read_dataset(config) -> Dataset:
-    fetcher = _get_fetcher(config["fetcher"])
-    return Dataset(config["name"], fetcher)
+    fetcher = _get_component("fetcher", config["fetcher"])
+    extractor = _get_component("extractor", config["extractor"])
+    return Dataset(config["name"], fetcher, extractor)
 
 
-def _get_fetcher(config) -> Fetcher:
+def _get_component(group, config):
     name = config.pop("name")
-    for fetcher in entry_points(group="fetcher"):
-        if fetcher.name == name:
-            return fetcher.load()(**config)
+    for component in entry_points(group=group):
+        if component.name == name:
+            return component.load()(**config)
 
-    raise errors.ConfigurationError(f"Unable to find fetcher: {name}")
+    raise errors.ConfigurationError(f"Unable to find {group}: {name}")
 
 
 class _Configuration(collections.UserDict):

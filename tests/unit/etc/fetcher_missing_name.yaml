@@ -4,3 +4,6 @@ datasets:
   fetcher:
     base_url: http://example.com/datasets/price_of_tea_in_china
     download_folder: /opt/rawdata/price_of_tea_in_china
+  extractor:
+    name: testing
+    foo: bar
