@@ -9,7 +9,7 @@ from dc_etl.fetch import Timespan
 from dc_etl.fetchers.cpc import CPCFetcher
 from dc_etl.filespec import FileSpec
 
-from ..conftest import mock_dataset, MockFilesystem
+from ..conftest import mock_serialized_dataset, MockFilesystem
 
 
 class TestCPCFetcher:
@@ -148,4 +148,4 @@ def cpc_us_precip(year):
         numpy.datetime64(f"{year}-01-01", "ns"), numpy.datetime64(f"{year + 1}-01-01", "ns"), numpy.timedelta64(1, "D")
     )
     data = numpy.random.randn(len(time), len(lat), len(lon))
-    return mock_dataset(data=("precip", data), dims=[("time", time), ("lat", lat), ("lon", lon)])
+    return mock_serialized_dataset(data=("precip", data), dims=[("time", time), ("lat", lat), ("lon", lon)])

@@ -9,11 +9,12 @@ import fsspec
 import yaml
 
 from . import errors
+from .combine import Combiner, CombinePreprocessor, CombinePostprocessor
 from .dataset import Dataset
 from .extract import Extractor
 from .fetch import Fetcher
 from .filespec import FileSpec
-from .combine import Combiner, CombinePreprocessor, CombinePostprocessor
+from .transform import Transformer
 
 CONFIG_FILE = "datasets.yaml"
 _MISSING = object()
@@ -46,7 +47,7 @@ def extractor(name: str, *args, **kwargs) -> Extractor:
 
 
 def combiner(name: str, *args, **kwargs) -> Combiner:
-    """Get and configure an combiner implementation by name.
+    """Get and configure a combiner implementation by name.
 
     Parameters
     ----------
@@ -59,7 +60,7 @@ def combiner(name: str, *args, **kwargs) -> Combiner:
 
 
 def combine_preprocessor(name: str, *args, **kwargs) -> CombinePreprocessor:
-    """Get and configure an preprocessor implementation by name.
+    """Get and configure a preprocessor implementation by name.
 
     Parameters
     ----------
@@ -72,7 +73,7 @@ def combine_preprocessor(name: str, *args, **kwargs) -> CombinePreprocessor:
 
 
 def combine_postprocessor(name: str, *args, **kwargs) -> CombinePostprocessor:
-    """Get and configure an postprocessor implementation by name.
+    """Get and configure a postprocessor implementation by name.
 
     Parameters
     ----------
@@ -82,6 +83,19 @@ def combine_postprocessor(name: str, *args, **kwargs) -> CombinePostprocessor:
         Any extra keyword arguments are passed to the implementation entry point to get an instance.
     """
     return _get_component("combine_postprocessor", name, args, kwargs)
+
+
+def transformer(name: str, *args, **kwargs) -> Transformer:
+    """Get and configure a transformer implementation by name.
+
+    Parameters
+    ----------
+    name : str
+        The registered name of the transformer implementation to get and configure.
+    **kwargs :
+        Any extra keyword arguments are passed to the implementation entry point to get an instance.
+    """
+    return _get_component("transformer", name, args, kwargs)
 
 
 class Configuration:
@@ -117,7 +131,13 @@ def _read_dataset(config) -> Dataset:
     ]
     combiner_inst = combiner(name, **kwargs)
 
-    return Dataset(config["name"], fetcher_inst, extractor_inst, combiner_inst)
+    if "transformer" in config:
+        name, kwargs = config["transformer"].immutable_pop("name")
+        transformer_inst = _get_component("transformer", name, (), kwargs)
+    else:
+        transformer_inst = None
+
+    return Dataset(config["name"], fetcher_inst, extractor_inst, combiner_inst, transformer_inst)
 
 
 def _read_component(group, config):

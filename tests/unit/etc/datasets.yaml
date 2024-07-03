@@ -11,6 +11,9 @@ datasets:
   combiner:
     name: testing
     arg: value
+  transformer:
+    name: testing
+    mut: ate
 
 - name: open_waffle_houses
   fetcher:
