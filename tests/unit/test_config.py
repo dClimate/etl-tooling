@@ -4,11 +4,46 @@ import pathlib
 import fsspec
 import pytest
 
-from dc_etl import config as config_module
+from dc_etl import combine, config as config_module
 from dc_etl import errors
 from dc_etl import filespec
 from dc_etl.extractors import netcdf
 from dc_etl.fetchers import cpc
+
+
+def test_fetcher():
+    fetcher = config_module.fetcher("testing", "one", "two", foo="bar", bar="baz")
+    assert fetcher.args == ("one", "two")
+    assert fetcher.foo == "bar"
+    assert fetcher.bar == "baz"
+
+
+def test_extractor():
+    extractor = config_module.extractor("testing", "one", "two", foo="bar", bar="baz")
+    assert extractor.args == ("one", "two")
+    assert extractor.foo == "bar"
+    assert extractor.bar == "baz"
+
+
+def test_combiner():
+    combiner = config_module.combiner("testing", "one", "two", foo="bar", bar="baz")
+    assert combiner.args == ("one", "two")
+    assert combiner.foo == "bar"
+    assert combiner.bar == "baz"
+
+
+def test_combine_preprocessor():
+    combine_preprocessor = config_module.combine_preprocessor("testing", "one", "two", foo="bar", bar="baz")
+    assert combine_preprocessor.args == ("one", "two")
+    assert combine_preprocessor.foo == "bar"
+    assert combine_preprocessor.bar == "baz"
+
+
+def test_combine_postprocessor():
+    combine_postprocessor = config_module.combine_postprocessor("testing", "one", "two", foo="bar", bar="baz")
+    assert combine_postprocessor.args == ("one", "two")
+    assert combine_postprocessor.foo == "bar"
+    assert combine_postprocessor.bar == "baz"
 
 
 class TestConfiguration:
@@ -45,11 +80,11 @@ class TestConfiguration:
         assert config.datasets[1].extractor.bar == "baz"
 
     def test_constructor_bad_fetcher(self):
-        with pytest.raises(errors.ConfigurationError):
+        with pytest.raises(errors.MissingConfigurationError):
             self._read_config("etc/bad_fetcher.yaml")
 
     def test_constructor_fetcher_missing_name(self):
-        with pytest.raises(errors.ConfigurationError):
+        with pytest.raises(errors.MissingConfigurationError):
             self._read_config("etc/fetcher_missing_name.yaml")
 
     def test_constructor_config_yaml_in_cwd(self):
@@ -84,7 +119,7 @@ class TestConfiguration:
 
     def test_constructor_config_yaml_is_missing(self, tmpdir):
         os.chdir(tmpdir)
-        with pytest.raises(errors.ConfigurationError):
+        with pytest.raises(errors.MissingConfigurationError):
             self._read_config()
 
 
@@ -105,3 +140,10 @@ class TestConfigurationForConcreteImplementations:
         assert isinstance(precip_global.extractor, netcdf.NetCDFExtractor)
         assert precip_global.extractor.inline_threshold == 42
         assert precip_global.extractor.output_folder.path == "output/folder"
+
+        assert isinstance(precip_global.combiner, combine.DefaultCombiner)
+        assert precip_global.combiner.output.path == "combined/output"
+        assert precip_global.combiner.concat_dims == ["time"]
+        assert precip_global.combiner.identical_dims == ["latitude", "longitude"]
+        assert len(precip_global.combiner.preprocessors) == 1
+        assert precip_global.combiner.preprocessors[0].__name__ == "fix_fill_value"

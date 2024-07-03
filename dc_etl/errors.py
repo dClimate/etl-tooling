@@ -1,2 +1,2 @@
-class ConfigurationError(Exception):
-    """Raised when configuration is missing or invalid."""
+class MissingConfigurationError(KeyError):
+    """Raised when configuration is missing."""

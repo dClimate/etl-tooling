@@ -41,6 +41,16 @@ testing = "tests.unit.conftest:mock_entry_point"
 netcdf = "dc_etl.extractors.netcdf:NetCDFExtractor"
 testing = "tests.unit.conftest:mock_entry_point"
 
+[project.entry-points.combiner]
+default = "dc_etl.combine:DefaultCombiner"
+testing = "tests.unit.conftest:mock_entry_point"
+
+[project.entry-points.combine_preprocessor]
+fix_fill_value = "dc_etl.combine_preprocessors:fix_fill_value"
+testing = "tests.unit.conftest:mock_entry_point"
+
+[project.entry-points.combine_postprocessor]
+testing = "tests.unit.conftest:mock_entry_point"
 
 [project.optional-dependencies]
 testing = [

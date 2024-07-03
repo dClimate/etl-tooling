@@ -4,8 +4,11 @@ import pathlib
 
 from unittest import mock
 
+import orjson
 import pytest
 import xarray
+
+HERE = pathlib.Path(__file__).absolute().parent
 
 
 @pytest.fixture(autouse=True)
@@ -13,17 +16,16 @@ def use_this_folder_as_cwd_for_tests():
     # Save the old cwd
     prev = os.getcwd()
 
-    # Where is here?
-    here = pathlib.Path(__file__).absolute().parent
-    os.chdir(here)
+    os.chdir(HERE)
 
     # Wait for test to finish then change back
     yield
     os.chdir(prev)
 
 
-def mock_entry_point(**config):
+def mock_entry_point(*args, **config):
     component = mock.Mock()
+    component.args = args
     component.__dict__.update(config)
     return component
 
@@ -60,3 +62,9 @@ def mock_dataset(data, dims):
     buf = io.BytesIO()
     serialized = ds.to_netcdf(buf)
     return serialized
+
+
+@pytest.fixture
+def zarr_json():
+    infile = HERE / "files" / "chirps_example_zarr.json"
+    return orjson.loads(open(infile).read())

@@ -4,7 +4,7 @@ import os
 import pytest
 import xarray
 
-from dc_etl.errors import ConfigurationError
+from dc_etl.errors import MissingConfigurationError
 from dc_etl.fetch import Timespan
 from dc_etl.fetchers.cpc import CPCFetcher
 from dc_etl.filespec import FileSpec
@@ -35,7 +35,7 @@ class TestCPCFetcher:
         fsspec.filesystem.assert_called_once_with("ftp", host="ftp.cdc.noaa.gov")
 
     def test_constructor_with_bad_dataset(self):
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(MissingConfigurationError):
             CPCFetcher("no such dataset")
 
     @pytest.mark.usefixtures("patch_fs")
