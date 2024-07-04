@@ -18,7 +18,7 @@ class FileSpec(typing.NamedTuple):
 
     @classmethod
     def _load_yaml(cls, loader, node) -> FileSpec:
-        from .config import _Configuration  # Avoid circular import
+        from .pipeline import _Configuration  # Avoid circular import
 
         config = _Configuration(loader.construct_mapping(node), loader.name, [])
         fs = config.pop("fs")

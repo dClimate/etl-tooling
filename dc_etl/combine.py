@@ -64,6 +64,14 @@ class DefaultCombiner(Combiner):
         https://fsspec.github.io/kerchunk/tutorial.html#postprocessing
     """
 
+    @classmethod
+    def _from_config(cls, config) -> DefaultCombiner:
+        config["preprocessors"] = [pre.as_component("combine_preprocessor") for pre in config.get("preprocessors", ())]
+        config["postprocessors"] = [
+            post.as_component("combine_postprocessor") for post in config.get("postprocessors", ())
+        ]
+        return cls(**config)
+
     def __init__(
         self,
         output: FileSpec,

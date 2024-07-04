@@ -53,7 +53,7 @@ testing = "tests.unit.conftest:mock_entry_point"
 testing = "tests.unit.conftest:mock_entry_point"
 
 [project.entry-points.transformer]
-composite = "dc_etl.transformers:composite"
+composite = "dc_etl.transformers:Composite"
 rename_dims = "dc_etl.transformers:rename_dims"
 normalize_longitudes = "dc_etl.transformers:normalize_longitudes"
 testing = "tests.unit.conftest:mock_entry_point"

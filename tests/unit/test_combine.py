@@ -5,6 +5,7 @@ import orjson
 
 from dc_etl import combine as combine_module
 from dc_etl import filespec
+from dc_etl.config import _Configuration
 
 
 class MockMultiZarrToZarr:
@@ -33,6 +34,27 @@ class MockMultiZarrToZarr:
 
 
 class TestDefaultCombiner:
+
+    def test__from_config(self):
+        config = _Configuration(
+            {
+                "output": "put/it/here",
+                "concat_dims": ["a"],
+                "identical_dims": ["b", "c"],
+                "preprocessors": [{"name": "testing", "one": "two"}, {"name": "testing", "three": "four"}],
+                "postprocessors": [{"name": "testing", "five": "six"}, {"name": "testing", "seven": "eight"}],
+            },
+            "some/config/file",
+            [],
+        )
+        combiner = combine_module.DefaultCombiner._from_config(config)
+        assert combiner.output == "put/it/here"
+        assert combiner.concat_dims == ["a"]
+        assert combiner.identical_dims == ["b", "c"]
+        assert combiner.preprocessors[0].one == "two"
+        assert combiner.preprocessors[1].three == "four"
+        assert combiner.postprocessors[0].five == "six"
+        assert combiner.postprocessors[1].seven == "eight"
 
     def test___call__(self, tmpdir, mocker):
         kerchunk = mocker.patch("dc_etl.combine.combine")
