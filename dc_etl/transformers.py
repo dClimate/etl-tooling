@@ -3,7 +3,7 @@ import xarray
 from .transform import Transformer
 
 
-def composite(*transformers: Transformer) -> Transformer:
+class Composite:
     """A composition of transformers.
 
     The transformers used in the composition will be called in the order passed in with the output of one feeding the
@@ -20,13 +20,18 @@ def composite(*transformers: Transformer) -> Transformer:
         A single transformer composed of the transformers passed in as a pipeline.
     """
 
-    def transform(dataset: xarray.Dataset) -> xarray.Dataset:
-        for transform in transformers:
+    @classmethod
+    def _from_config(cls, config):
+        return cls(*[transformer.as_component("transformer") for transformer in config["transformers"]])
+
+    def __init__(self, *transformers: Transformer):
+        self.transformers = transformers
+
+    def __call__(self, dataset: xarray.Dataset) -> xarray.Dataset:
+        for transform in self.transformers:
             dataset = transform(dataset)
 
         return dataset
-
-    return transform
 
 
 def rename_dims(names: dict[str, str]) -> Transformer:
@@ -43,10 +48,10 @@ def rename_dims(names: dict[str, str]) -> Transformer:
         A Transformer instance that will do the renaming.
     """
 
-    def transform(dataset: xarray.Dataset) -> xarray.Dataset:
+    def rename_dims(dataset: xarray.Dataset) -> xarray.Dataset:
         return dataset.rename(names)
 
-    return transform
+    return rename_dims
 
 
 def normalize_longitudes() -> Transformer:
@@ -58,11 +63,11 @@ def normalize_longitudes() -> Transformer:
         The transformer.
     """
 
-    def transform(dataset: xarray.Dataset) -> xarray.Dataset:
+    def normalize_longitudes(dataset: xarray.Dataset) -> xarray.Dataset:
         dataset = dataset.assign_coords(longitude=(((dataset.longitude + 180) % 360) - 180))
 
         # After converting, the longitudes may still start at zero. This reorders the longitude coordinates from -180
         # to 180 if necessary.
         return dataset.sortby(["latitude", "longitude"])
 
-    return transform
+    return normalize_longitudes

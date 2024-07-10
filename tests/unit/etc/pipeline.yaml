@@ -1,0 +1,19 @@
+---
+fetcher:
+  name: testing
+  base_url: http://example.com/datasets/price_of_tea_in_china
+  download_folder: /opt/rawdata/price_of_tea_in_china
+extractor:
+  name: testing
+  foo: bar
+combiner:
+  name: testing
+  arg: value
+transformer:
+  name: composite
+  transformers:
+  - name: testing
+    mut: ate
+  - name: testing
+    trans: form
+

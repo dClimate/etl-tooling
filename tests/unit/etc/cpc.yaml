@@ -1,31 +1,37 @@
 ---
-datasets:
-- name: cpc_precip_global
+fetcher:
+  name: cpc
+  dataset: global_precip
+  cache: !filespec
+    fs: file
+    path: some/path/to/somewhere
+    auto_mkdir: True
 
-  fetcher:
-    name: cpc
-    dataset: global_precip
-    cache: !filespec
-      fs: file
-      path: some/path/to/somewhere
-      auto_mkdir: True
+extractor:
+  name: netcdf
+  inline_threshold: 42
+  output_folder: !filespec
+    fs: file
+    path: output/folder
 
-  extractor:
-    name: netcdf
-    inline_threshold: 42
-    output_folder: !filespec
-      fs: file
-      path: output/folder
+combiner:
+  output: !filespec
+    fs: file
+    path: combined/output
+  concat_dims:
+    - time
+  identical_dims:
+    - latitude
+    - longitude
+  preprocessors:
+    - name: fix_fill_value
+      fill_value: -9.96921e36
 
-  combiner:
-    output: !filespec
-      fs: file
-      path: combined/output
-    concat_dims:
-      - time
-    identical_dims:
-      - latitude
-      - longitude
-    preprocessors:
-      - name: fix_fill_value
-        fill_value: -9.96921e36
+transformer:
+  name: composite
+  transformers:
+  - name: rename_dims
+    names:
+      lat: latitude
+      lon: longitude
+  - name: normalize_longitudes

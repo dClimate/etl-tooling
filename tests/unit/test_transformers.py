@@ -3,20 +3,33 @@ from unittest import mock
 import numpy
 import pytest
 
+from dc_etl.config import _Configuration
 from dc_etl import transformers
 
 from .conftest import mock_dataset
 
 
-def test_composite():
-    def a(x):
-        return x * 2
+class TestComposite:
+    def test__from_config(self):
+        config = _Configuration(
+            {"transformers": [{"name": "testing", "trans": "form"}, {"name": "testing", "mut": "ate"}]},
+            "some/config/file",
+            [],
+        )
+        transformer = transformers.Composite._from_config(config)
+        assert len(transformer.transformers) == 2
+        assert transformer.transformers[0].trans == "form"
+        assert transformer.transformers[1].mut == "ate"
 
-    def b(x):
-        return x + 3
+    def test___call__(self):
+        def a(x):
+            return x * 2
 
-    composition = transformers.composite(a, b)
-    assert composition(4) == 11
+        def b(x):
+            return x + 3
+
+        composition = transformers.Composite(a, b)
+        assert composition(4) == 11
 
 
 def test_rename_dims():
