@@ -68,7 +68,7 @@ class TestDefaultCombiner:
 
         source1 = filespec.file("path/one")
         source2 = filespec.file("path/two")
-        outfile = filespec.file(str(tmpdir)) / "combined_zarr_42.json"
+        outfile = filespec.file(tmpdir) / "combined_zarr_42.json"
 
         kerchunk.MultiZarrToZarr = MockMultiZarrToZarr(
             [source1.path, source2.path], "file", ["a", "b"], ["c", "d"], "my name is george", "i have a cheeseburger"

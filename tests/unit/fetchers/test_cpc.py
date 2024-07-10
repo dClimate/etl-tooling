@@ -46,7 +46,7 @@ class TestCPCFetcher:
 
     @pytest.mark.usefixtures("patch_fs")
     def test_get_remote_timespan_with_cache(self, tmpdir, mocker):
-        cache = file(str(tmpdir))
+        cache = file(tmpdir)
         fetcher = CPCFetcher("us_precip", cache)
         span = fetcher.get_remote_timespan()
         assert span.start == numpy.datetime64("1970-01-01")
@@ -73,7 +73,7 @@ class TestCPCFetcher:
 
     @pytest.mark.usefixtures("patch_fs")
     def test_prefetch_with_cache(self, tmpdir):
-        cache = file(str(tmpdir))
+        cache = file(tmpdir)
         fetcher = CPCFetcher("us_precip", cache)
         span = Timespan(numpy.datetime64("1971-05-12"), numpy.datetime64("1972-07-07"))
         fetcher.prefetch(span)
