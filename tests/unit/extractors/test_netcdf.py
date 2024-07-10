@@ -1,10 +1,9 @@
 from unittest import mock
 
-import fsspec
 import orjson
 
 from dc_etl.extractors.netcdf import NetCDFExtractor
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import file
 
 
 class TestNetCDFExtractor:
@@ -24,8 +23,7 @@ class TestNetCDFExtractor:
         zarr_json = hdf.SingleHdf5ToZarr.return_value
         zarr_json.translate.return_value = {"hi": "mom"}
 
-        fs = fsspec.filesystem("memory")
-        source = FileSpec(fs, "/data/file.nc")
+        source = file("/data/file.nc", "memory")
         mock_source = mock.Mock(wraps=source, open=mock.MagicMock(), path=source.path)
         src = mock_source.open.return_value.__enter__.return_value
 
@@ -41,9 +39,8 @@ class TestNetCDFExtractor:
         zarr_json = hdf.SingleHdf5ToZarr.return_value
         zarr_json.translate.return_value = {"hi": "mom"}
 
-        fs = fsspec.filesystem("memory")
-        source = FileSpec(fs, "/data/file.nc")
-        output = FileSpec(fs, "/extracted")
+        source = file("/data/file.nc", "memory")
+        output = file("/extracted", "memory")
         mock_source = mock.Mock(wraps=source, open=mock.MagicMock(), path=source.path)
         mock_source.name = source.name
         src = mock_source.open.return_value.__enter__.return_value

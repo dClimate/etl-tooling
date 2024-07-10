@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-import fsspec
 import pathlib
-
 
 from dc_etl.combine import Combiner
 from dc_etl.config import _Configuration
 from dc_etl.extract import Extractor
 from dc_etl.fetch import Fetcher
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import File, file
 from dc_etl.load import Loader
 from dc_etl.transform import Transformer, identity
 
@@ -31,10 +29,10 @@ class Pipeline:
     """
 
     @classmethod
-    def from_yaml(cls, path: pathlib.Path | FileSpec) -> Pipeline:
+    def from_yaml(cls, path: pathlib.Path | File) -> Pipeline:
         """Import configuration from a yaml file."""
-        if not isinstance(path, FileSpec):
-            path = FileSpec(fsspec.filesystem("file"), str(path))
+        if not isinstance(path, File):
+            path = file(path)
 
         config = _Configuration.from_yaml(path)
         return cls._from_config(config)

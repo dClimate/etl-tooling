@@ -1,6 +1,5 @@
 from unittest import mock
 
-import fsspec
 import orjson
 
 from dc_etl import combine as combine_module
@@ -67,9 +66,9 @@ class TestDefaultCombiner:
         post1 = mock.Mock(return_value="i have 5 dollars")
         post2 = mock.Mock(return_value="i have a cheeseburger")
 
-        source1 = filespec.FileSpec(fsspec.filesystem("file"), "path/one")
-        source2 = filespec.FileSpec(fsspec.filesystem("file"), "path/two")
-        outfile = filespec.FileSpec(fsspec.filesystem("file"), str(tmpdir)) / "combined_zarr_42.json"
+        source1 = filespec.file("path/one")
+        source2 = filespec.file("path/two")
+        outfile = filespec.file(str(tmpdir)) / "combined_zarr_42.json"
 
         kerchunk.MultiZarrToZarr = MockMultiZarrToZarr(
             [source1.path, source2.path], "file", ["a", "b"], ["c", "d"], "my name is george", "i have a cheeseburger"

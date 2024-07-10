@@ -5,7 +5,35 @@ import typing
 import fsspec
 
 
-class FileSpec(typing.NamedTuple):
+def file(path, fs_name="file", *fs_args, **fs_kwargs) -> File:
+    """Get a File instance which combines an fsspec Filesystem with a path component.
+
+    Parameters
+    ----------
+    path: str
+        The path to the file in the filesystem. May be a URL appropriate for the filesystem.
+
+    fs_name: str
+        The fsspec filesystem name, as pased `fsspec.fileystem`. Defaults to `"file"`.
+
+    *fs_args:
+        Arbitrary positional arguments to be passed along to `fsspec.filesystem` after the filesystem name. Particulars
+        will depend on the actual filesystem being used.
+
+    **fs_kwargs:
+        Arbitrary keyword arguments to be passed along to `fsspec.filesystem`. Particulars will depend on the actual
+        filesystem being used.
+
+    Returns
+    -------
+    File:
+        The File instance.
+    """
+    fs = fsspec.filesystem(fs_name, *fs_args, **fs_kwargs)
+    return File(fs, str(path))
+
+
+class File(typing.NamedTuple):
     """Encapsulates both the location of a file and its fsspec "filesystem"."""
 
     fs: fsspec.AbstractFileSystem
@@ -17,7 +45,7 @@ class FileSpec(typing.NamedTuple):
     """
 
     @classmethod
-    def _load_yaml(cls, loader, node) -> FileSpec:
+    def _load_yaml(cls, loader, node) -> File:
         from .config import _Configuration  # Avoid circular import
 
         config = _Configuration(loader.construct_mapping(node), loader.name, [])
@@ -33,7 +61,7 @@ class FileSpec(typing.NamedTuple):
         """A passthrough to `fsspec.AbstractFilesystem.open` using the path from this instance."""
         return self.fs.open(self.path, mode)
 
-    def with_suffix(self, suffix: str) -> FileSpec:
+    def with_suffix(self, suffix: str) -> File:
         """Returns a new FileSpec with the file suffix changed to `suffix`.
 
         If there is no file suffix, one is added.
@@ -56,7 +84,7 @@ class FileSpec(typing.NamedTuple):
             if sep < dot:
                 path = path[:dot]
 
-        return FileSpec(self.fs, f"{path}.{suffix.lstrip('.')}")
+        return File(self.fs, f"{path}.{suffix.lstrip('.')}")
 
     @property
     def name(self) -> str:
@@ -68,7 +96,7 @@ class FileSpec(typing.NamedTuple):
 
         return path
 
-    def __truediv__(self, other: str) -> FileSpec:
+    def __truediv__(self, other: str) -> File:
         """Overloads the `/` (division) operator to allow new paths to be created by appending new path elements,
         much as `pathlib.Path` does in the standard library.
         """
@@ -76,7 +104,7 @@ class FileSpec(typing.NamedTuple):
         return type(self)(self.fs, path)
 
     @property
-    def parent(self) -> FileSpec:
+    def parent(self) -> File:
         split = self.path.rstrip("/").rsplit("/", 1)
         if len(split) == 2:
             parent, _ = split

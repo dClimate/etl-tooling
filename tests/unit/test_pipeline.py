@@ -1,9 +1,7 @@
-import fsspec
-
 from dc_etl import combine
 from dc_etl.extractors import netcdf
 from dc_etl.fetchers import cpc
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import file
 from dc_etl.ipld.loader import IPLDLoader
 from dc_etl.ipld.local_file import LocalFileIPLDPublisher
 from dc_etl.pipeline import Pipeline
@@ -39,7 +37,7 @@ class TestPipeline:
         assert pipeline.loader.load == "it"
 
     def test_from_yaml_cpc(self):
-        path = FileSpec(fsspec.filesystem("file"), "etc/cpc.yaml")
+        path = file("etc/cpc.yaml")
         precip_global = Pipeline.from_yaml(path)
 
         assert isinstance(precip_global.fetcher, cpc.CPCFetcher)

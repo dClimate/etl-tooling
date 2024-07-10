@@ -10,7 +10,7 @@ import xarray
 
 from dc_etl.errors import MissingConfigurationError
 from dc_etl.fetch import Fetcher, Timespan
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import File
 
 _GLOB = {
     "global_precip": ["/Datasets/cpc_global_precip/precip.*.nc"],
@@ -34,7 +34,7 @@ class CPCFetcher(Fetcher):
         Optionally, a writable folder where downloaded files can be cached.
     """
 
-    def __init__(self, dataset: str, cache: FileSpec | None = None):
+    def __init__(self, dataset: str, cache: File | None = None):
         glob = _GLOB.get(dataset)
         if glob is None:
             raise MissingConfigurationError(f"Unrecognized dataset: {dataset}, valid values are {', '.join(_GLOB)}")
@@ -82,7 +82,7 @@ class CPCFetcher(Fetcher):
             for _ in self.fetch(span):
                 pass
 
-    def fetch(self, span: Timespan) -> Generator[FileSpec, None, None]:
+    def fetch(self, span: Timespan) -> Generator[File, None, None]:
         """Implementation of :meth:`Fetcher.fetch`"""
         start = span.start.astype(object).year
         end = span.end.astype(object).year
@@ -94,7 +94,7 @@ class CPCFetcher(Fetcher):
         """Get a FileSpec for the path, using the cache if configured."""
         # Not using cache
         if not self._cache:
-            return FileSpec(self._fs, path)
+            return File(self._fs, path)
 
         # Check cache
         cache_path = self._cache_path(path)
@@ -109,7 +109,7 @@ class CPCFetcher(Fetcher):
         """Get a FileSpec for the year, using the cache if configured."""
         # Not using cache
         if not self._cache:
-            return FileSpec(self._fs, self._year_to_path(year))
+            return File(self._fs, self._year_to_path(year))
 
         # Check cache
         if self._cache.exists():

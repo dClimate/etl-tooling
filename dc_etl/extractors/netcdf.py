@@ -3,7 +3,7 @@ import orjson
 from kerchunk import hdf
 
 from dc_etl.extract import Extractor
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import File
 
 
 class NetCDFExtractor(Extractor):
@@ -20,11 +20,11 @@ class NetCDFExtractor(Extractor):
         inline data. Default is 5000.
     """
 
-    def __init__(self, output_folder: FileSpec = None, inline_threshold: int = 5000):
+    def __init__(self, output_folder: File = None, inline_threshold: int = 5000):
         self.output_folder = output_folder
         self.inline_threshold = inline_threshold
 
-    def extract(self, source: FileSpec) -> FileSpec:
+    def extract(self, source: File) -> File:
         """Implementation of :meth:`Extractor.extract`"""
         if self.output_folder:
             dest = (self.output_folder / source.name).with_suffix("json")

@@ -1,13 +1,13 @@
 import abc
 
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import File
 
 
 class Extractor(abc.ABC):
     """Responsible for taking a raw source file and turning it into a single Zarr JSON."""
 
     @abc.abstractmethod
-    def extract(self, source: FileSpec) -> FileSpec:
+    def extract(self, source: File) -> File:
         """Extract a source data file into a single Zarr JSON file.
 
         Parameters

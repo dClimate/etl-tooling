@@ -40,7 +40,7 @@ class Fetcher(abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch(self, span: Timespan) -> typing.Generator[filespec.FileSpec, None, None]:
+    def fetch(self, span: Timespan) -> typing.Generator[filespec.File, None, None]:
         """Extract any files from the remote data provider corresponding to the given timespan.
 
         Data files from the data provider that correspond to the given timespan will be opened using xarray and yielded
