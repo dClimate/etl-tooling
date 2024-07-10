@@ -16,3 +16,16 @@ datasets:
     output_folder: !filespec
       fs: file
       path: output/folder
+
+  combiner:
+    output: !filespec
+      fs: file
+      path: combined/output
+    concat_dims:
+      - time
+    identical_dims:
+      - latitude
+      - longitude
+    preprocessors:
+      - name: fix_fill_value
+        fill_value: -9.96921e36

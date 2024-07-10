@@ -8,7 +8,7 @@ from typing import Generator
 import fsspec
 import xarray
 
-from dc_etl.errors import ConfigurationError
+from dc_etl.errors import MissingConfigurationError
 from dc_etl.fetch import Fetcher, Timespan
 from dc_etl.filespec import FileSpec
 
@@ -37,7 +37,7 @@ class CPCFetcher(Fetcher):
     def __init__(self, dataset: str, cache: FileSpec | None = None):
         glob = _GLOB.get(dataset)
         if glob is None:
-            raise ConfigurationError(f"Unrecognized dataset: {dataset}, valid values are {', '.join(_GLOB)}")
+            raise MissingConfigurationError(f"Unrecognized dataset: {dataset}, valid values are {', '.join(_GLOB)}")
 
         self._glob = glob
         self._fs = fsspec.filesystem("ftp", host="ftp.cdc.noaa.gov")

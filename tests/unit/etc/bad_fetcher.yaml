@@ -6,3 +6,6 @@ datasets:
   extractor:
     name: testing
     foo: bar
+  combiner:
+    name: testing
+    arg: value

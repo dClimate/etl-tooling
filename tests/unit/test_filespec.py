@@ -52,7 +52,7 @@ class TestFileSpec:
         node = object()
         fsspec = mocker.patch("dc_etl.filespec.fsspec")
 
-        with pytest.raises(errors.ConfigurationError):
+        with pytest.raises(errors.MissingConfigurationError):
             filespec.FileSpec._load_yaml(loader, node)
 
         loader.construct_mapping.assert_called_once_with(node)
