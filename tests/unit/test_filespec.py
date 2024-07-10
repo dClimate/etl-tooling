@@ -107,3 +107,23 @@ class TestFileSpec:
     @staticmethod
     def test_name_no_parent():
         assert filespec.FileSpec(None, "thing").name == "thing"
+
+    @staticmethod
+    def test_parent():
+        assert filespec.FileSpec(None, "/some/path/to/file").parent.path == "/some/path/to"
+
+    @staticmethod
+    def test_parent_trailing_slash():
+        assert filespec.FileSpec(None, "/some/path/to/file/").parent.path == "/some/path/to"
+
+    @staticmethod
+    def test_parent_no_parent():
+        assert filespec.FileSpec(None, "file").parent is None
+
+    @staticmethod
+    def test_parent_root():
+        assert filespec.FileSpec(None, "/").parent is None
+
+    @staticmethod
+    def test_parent_in_root():
+        assert filespec.FileSpec(None, "/some").parent.path == "/"

@@ -16,4 +16,6 @@ transformer:
     mut: ate
   - name: testing
     trans: form
-
+loader:
+  name: testing
+  load: it

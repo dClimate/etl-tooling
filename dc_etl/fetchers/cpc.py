@@ -40,11 +40,18 @@ class CPCFetcher(Fetcher):
             raise MissingConfigurationError(f"Unrecognized dataset: {dataset}, valid values are {', '.join(_GLOB)}")
 
         self._glob = glob
-        self._fs = fsspec.filesystem("ftp", host="ftp.cdc.noaa.gov")
         self._cache = cache
 
+    @property
     @functools.cache
-    def _get_files(self):
+    def _fs(self):
+        """Get the FTP filesystem lazily.
+
+        Instantiating the fsspec filesystem creates a network connection, so it's better to this lazily."""
+        return fsspec.filesystem("ftp", host="ftp.cdc.noaa.gov")
+
+    @functools.cache
+    def _get_remote_files(self):
         seen_years = set()
         files = []
         for glob in self._glob:
@@ -64,9 +71,9 @@ class CPCFetcher(Fetcher):
     @functools.cache
     def get_remote_timespan(self) -> Timespan:
         """Implementation of :meth:`Fetcher.get_remote_timespan`"""
-        files = self._get_files()
-        first = xarray.open_dataset(self._get_file(files[0]).open())
-        last = xarray.open_dataset(self._get_file(files[-1]).open())
+        files = self._get_remote_files()
+        first = xarray.open_dataset(self._get_file_by_path(files[0]).open())
+        last = xarray.open_dataset(self._get_file_by_path(files[-1]).open())
         return Timespan(first.time[0].values, last.time[-1].values)
 
     def prefetch(self, span: Timespan):
@@ -81,9 +88,9 @@ class CPCFetcher(Fetcher):
         end = span.end.astype(object).year
 
         for year in range(start, end + 1):
-            yield self._get_file(self._year_to_path(year))
+            yield self._get_file_by_year(year)
 
-    def _get_file(self, path):
+    def _get_file_by_path(self, path):
         """Get a FileSpec for the path, using the cache if configured."""
         # Not using cache
         if not self._cache:
@@ -98,15 +105,36 @@ class CPCFetcher(Fetcher):
         # Return the cached file
         return cache_path
 
+    def _get_file_by_year(self, year):
+        """Get a FileSpec for the year, using the cache if configured."""
+        # Not using cache
+        if not self._cache:
+            return FileSpec(self._fs, self._year_to_path(year))
+
+        # Check cache
+        if self._cache.exists():
+            for path in self._cache.fs.ls(self._cache.path):
+                if _DATA_FILE.match(path) and _year(path) == year:
+                    return self._cache_path(path)
+
+        # Download it to the cache
+        path = self._year_to_path(year)
+        cache_path = self._cache_path(path)
+        self._fs.get_file(path, cache_path.open("wb"))
+
+        return cache_path
+
     def _cache_path(self, path):
         """Compute a file's path in the cache."""
         filename = path.split("/")[-1]
         return self._cache / filename
 
     def _year_to_path(self, year):
-        for path in self._get_files():  # pragma NO BRANCH
+        for path in self._get_remote_files():
             if _year(path) == year:
                 return path
+
+        raise KeyError(year)
 
 
 def _year(path: str) -> int:
