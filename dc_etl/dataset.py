@@ -1,6 +1,7 @@
 from dc_etl.combine import Combiner
 from dc_etl.extract import Extractor
 from dc_etl.fetch import Fetcher
+from dc_etl.transform import Transformer, identity
 
 
 class Dataset:
@@ -19,8 +20,11 @@ class Dataset:
         The combiner used to merge single Zarr JSONs into a MultiZarr JSON.
     """
 
-    def __init__(self, name: str, fetcher: Fetcher, extractor: Extractor, combiner: Combiner):
+    def __init__(
+        self, name: str, fetcher: Fetcher, extractor: Extractor, combiner: Combiner, transformer: Transformer
+    ):
         self.name = name
         self.fetcher = fetcher
         self.extractor = extractor
         self.combiner = combiner
+        self.transformer = identity if transformer is None else transformer

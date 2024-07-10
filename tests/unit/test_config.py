@@ -9,6 +9,7 @@ from dc_etl import errors
 from dc_etl import filespec
 from dc_etl.extractors import netcdf
 from dc_etl.fetchers import cpc
+from dc_etl.transform import identity
 
 
 def test_fetcher():
@@ -46,6 +47,13 @@ def test_combine_postprocessor():
     assert combine_postprocessor.bar == "baz"
 
 
+def test_transformer():
+    transformer = config_module.transformer("testing", "one", "two", foo="bar", bar="baz")
+    assert transformer.args == ("one", "two")
+    assert transformer.foo == "bar"
+    assert transformer.bar == "baz"
+
+
 class TestConfiguration:
 
     def _read_config(self, path=None):
@@ -59,11 +67,15 @@ class TestConfiguration:
         assert config.datasets[0].fetcher.base_url == "http://example.com/datasets/price_of_tea_in_china"
         assert config.datasets[0].fetcher.download_folder == "/opt/rawdata/price_of_tea_in_china"
         assert config.datasets[0].extractor.foo == "bar"
+        assert config.datasets[0].combiner.arg == "value"
+        assert config.datasets[0].transformer.mut == "ate"
 
         assert config.datasets[1].name == "open_waffle_houses"
         assert config.datasets[1].fetcher.base_url == "http://example.com/datasets/open_waffle_houses"
         assert config.datasets[1].fetcher.download_folder == "/opt/rawdata/open_waffle_houses"
         assert config.datasets[1].extractor.bar == "baz"
+        assert config.datasets[1].combiner.arg == "ument"
+        assert config.datasets[1].transformer is identity
 
     def test_constructor_explicit_config_path(self):
         config = self._read_config("etc/datasets.yaml")
@@ -73,6 +85,8 @@ class TestConfiguration:
         assert config.datasets[0].fetcher.base_url == "http://example.com/datasets/price_of_tea_in_china"
         assert config.datasets[0].fetcher.download_folder == "/opt/rawdata/price_of_tea_in_china"
         assert config.datasets[0].extractor.foo == "bar"
+        assert config.datasets[0].combiner.arg == "value"
+        assert config.datasets[0].transformer.mut == "ate"
 
         assert config.datasets[1].name == "open_waffle_houses"
         assert config.datasets[1].fetcher.base_url == "http://example.com/datasets/open_waffle_houses"

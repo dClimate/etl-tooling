@@ -57,8 +57,11 @@ def mock_dataset(data, dims):
 
     name, data = data
     data = xarray.DataArray(data, dims=coord_names, coords=coords)
-    ds = xarray.Dataset({name: data})
+    return xarray.Dataset({name: data})
 
+
+def mock_serialized_dataset(data, dims):
+    ds = mock_dataset(data, dims)
     buf = io.BytesIO()
     serialized = ds.to_netcdf(buf)
     return serialized
