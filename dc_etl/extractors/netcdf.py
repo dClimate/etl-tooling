@@ -24,7 +24,7 @@ class NetCDFExtractor(Extractor):
         self.output_folder = output_folder
         self.inline_threshold = inline_threshold
 
-    def extract(self, source: FileSpec) -> FileSpec:
+    def __call__(self, source: FileSpec) -> FileSpec:
         """Implementation of :meth:`Extractor.extract`"""
         if self.output_folder:
             dest = (self.output_folder / source.name).with_suffix("json")

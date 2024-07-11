@@ -1,0 +1,43 @@
+---
+fetcher:
+  name: cpc
+  dataset: us_precip
+  cache: !filespec
+    fs: file
+    path: cached_data/cpc/us_precip
+    auto_mkdir: True
+
+extractor:
+  name: netcdf
+
+combiner:
+  output_folder: !filespec
+    fs: file
+    path: cached_data/cpc/us_precip/combined
+    auto_mkdir: True
+  concat_dims:
+    - time
+  identical_dims:
+    - lat
+    - lon
+  preprocessors:
+    - name: fix_fill_value
+      fill_value: -9.96921e36
+
+transformer:
+  name: composite
+  transformers:
+  - name: rename_dims
+    names:
+      lat: latitude
+      lon: longitude
+  - name: normalize_longitudes
+
+loader:
+  name: ipld
+  time_dim: time
+  publisher:
+    name: local_file
+    path: !filespec
+      fs: file
+      path: cached_data/cpc/us_precip/zarr_head.cid

@@ -10,7 +10,7 @@ class TestCompositeTransformer:
         span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
         sources = component.fetcher("cpc", "us_precip", cache=cache).fetch(span)
         extractor = component.extractor("netcdf")
-        zarr_jsons = list(map(extractor.extract, sources))
+        zarr_jsons = list(map(extractor, sources))
         multizarr = cache / "cpc" / "us_precip" / "combined-cpc-us-precip-1982-1984.json"
         combine = component.combiner(
             "default",

@@ -15,7 +15,7 @@ def test_declarative_configuration():
     # Initial dataset
     span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
     sources = pipeline.fetcher.fetch(span)
-    extracted = [pipeline.extractor.extract(source) for source in sources]
+    extracted = [pipeline.extractor(source) for source in sources]
     dataset = pipeline.combiner(extracted)
     dataset = pipeline.transformer(dataset)
     pipeline.loader.initial(dataset, span)
@@ -27,7 +27,7 @@ def test_declarative_configuration():
     # Append some more data
     span = Timespan(npdate(1984, 6, 26), npdate(1985, 9, 30))  # Purple Rain, Rain Dogs
     sources = pipeline.fetcher.fetch(span)
-    extracted = [pipeline.extractor.extract(source) for source in sources]
+    extracted = [pipeline.extractor(source) for source in sources]
     dataset = pipeline.combiner(extracted)
     dataset = pipeline.transformer(dataset)
     pipeline.loader.append(dataset, span)
@@ -40,7 +40,7 @@ def test_declarative_configuration():
     date = npdate(1984, 12, 25)
     span = Timespan(date, date)
     sources = pipeline.fetcher.fetch(span)
-    extracted = [pipeline.extractor.extract(source) for source in sources]
+    extracted = [pipeline.extractor(source) for source in sources]
     dataset = pipeline.combiner(extracted)
     dataset = pipeline.transformer(dataset)
 

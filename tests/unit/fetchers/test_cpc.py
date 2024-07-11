@@ -86,7 +86,9 @@ class TestCPCFetcher:
     @pytest.mark.usefixtures("patch_fs")
     def test_fetch(self, mockfs):
         fetcher = CPCFetcher("us_precip")
-        span = Timespan(numpy.datetime64("1971-05-12"), numpy.datetime64("1972-07-07"))
+        span = Timespan(
+            numpy.datetime64("1971-05-12T00:00:00.000000000"), numpy.datetime64("1972-07-07T00:00:00.000000000")
+        )
 
         files = list(fetcher.fetch(span))
         assert len(files) == 2
@@ -155,6 +157,7 @@ def mockfs():
             "/Datasets/cpc_us_precip/RT/precip.V1.0.1971.nc": b"should be superceded by above",
             "/Datasets/cpc_us_precip/RT/precip.V1.0.1972.nc": cpc_us_precip(1972),
             "/Datasets/cpc_us_precip/precip.V1.0.whut.nc": b"should be excluded by regular expression",
+            "/Datasets/cpc_us_precip/precip.V1.0.day.ltm.1991-2020.nc": b"should be excluded by regular expression",
         }
     )
 
