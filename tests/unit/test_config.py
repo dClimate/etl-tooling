@@ -1,9 +1,8 @@
-import fsspec
 import pytest
 
 from dc_etl.config import _Configuration
 from dc_etl.errors import MissingConfigurationError
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import file
 
 
 @pytest.fixture
@@ -17,7 +16,7 @@ def config():
 
 class Test_Configuration:
     def test_from_yaml(self):
-        config = _Configuration.from_yaml(FileSpec(fsspec.filesystem("file"), "etc/config.yaml"))
+        config = _Configuration.from_yaml(file("etc/config.yaml"))
         assert config["one"] == {"a": "b", "c": "d"}
 
     def test_get(self, config):

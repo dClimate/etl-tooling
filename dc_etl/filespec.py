@@ -5,6 +5,34 @@ import typing
 import fsspec
 
 
+def file(path, fs_name="file", *fs_args, **fs_kwargs) -> FileSpec:
+    """Get a FileSpec instance which combines an fsspec Filesystem with a path component.
+
+    Parameters
+    ----------
+    path: str
+        The path to the file in the filesystem. May be a URL appropriate for the filesystem.
+
+    fs_name: str
+        The fsspec filesystem name, as pased `fsspec.fileystem`. Defaults to `"file"`.
+
+    *fs_args:
+        Arbitrary positional arguments to be passed along to `fsspec.filesystem` after the filesystem name. Particulars
+        will depend on the actual filesystem being used.
+
+    **fs_kwargs:
+        Arbitrary keyword arguments to be passed along to `fsspec.filesystem`. Particulars will depend on the actual
+        filesystem being used.
+
+    Returns
+    -------
+    FileSpec:
+        The FileSpec instance.
+    """
+    fs = fsspec.filesystem(fs_name, *fs_args, **fs_kwargs)
+    return FileSpec(fs, str(path))
+
+
 class FileSpec(typing.NamedTuple):
     """Encapsulates both the location of a file and its fsspec "filesystem"."""
 

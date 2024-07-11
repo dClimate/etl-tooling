@@ -1,17 +1,15 @@
 """Test something a lot like a real pipeline for CPC.
 """
 
-import fsspec
-
 from dc_etl.fetch import Timespan
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import file
 from dc_etl.pipeline import Pipeline
 
 from tests.conftest import npdate
 
 
 def test_declarative_configuration():
-    path = FileSpec(fsspec.filesystem("file"), "pipelines/cpc_us_precip.yaml")
+    path = file("pipelines/cpc_us_precip.yaml")
     pipeline = Pipeline.from_yaml(path)
 
     # Initial dataset

@@ -1,10 +1,9 @@
 import os
 import pathlib
 
-import fsspec
 import pytest
 
-from dc_etl.filespec import FileSpec
+from dc_etl.filespec import file
 
 HERE = pathlib.Path(__file__).absolute().parent
 
@@ -12,7 +11,7 @@ HERE = pathlib.Path(__file__).absolute().parent
 @pytest.fixture
 def cache():
     system_tests = pathlib.Path(__file__).absolute().parent
-    return FileSpec(fsspec.filesystem("file", auto_mkdir=True), str(system_tests)) / "cached_data"
+    return file(system_tests, auto_mkdir=True) / "cached_data"
 
 
 @pytest.fixture(autouse=True)

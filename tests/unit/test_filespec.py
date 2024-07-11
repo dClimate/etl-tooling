@@ -6,6 +6,24 @@ import pytest
 from dc_etl import errors, filespec
 
 
+def test_file_default_fs(mocker):
+    fsspec = mocker.patch("dc_etl.filespec.fsspec")
+    fs = fsspec.filesystem.return_value
+    file = filespec.file("some/path")
+    assert file.fs is fs
+    assert file.path == "some/path"
+    fsspec.filesystem.assert_called_once_with("file")
+
+
+def test_file_explicit_fs(mocker):
+    fsspec = mocker.patch("dc_etl.filespec.fsspec")
+    fs = fsspec.filesystem.return_value
+    file = filespec.file("some/path", "testing", "one", "two", three="four")
+    assert file.fs is fs
+    assert file.path == "some/path"
+    fsspec.filesystem.assert_called_once_with("testing", "one", "two", three="four")
+
+
 class TestFileSpec:
     @staticmethod
     def test__load_yaml(mocker):
