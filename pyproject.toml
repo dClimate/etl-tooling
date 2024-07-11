@@ -81,8 +81,12 @@ dev = [
 doc = [
     "sphinx",
 ]
+examples = [
+    "docopt",
+    "python-dateutil",
+]
 all = [
-    "dc-etl[dev,testing,doc]",
+    "dc-etl[dev,testing,doc,examples]",
 ]
 
 [tool.setuptools_scm]

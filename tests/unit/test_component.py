@@ -41,3 +41,17 @@ def test_transformer():
     assert transformer.args == ("one", "two")
     assert transformer.foo == "bar"
     assert transformer.bar == "baz"
+
+
+def test_loader():
+    loader = component.loader("testing", "one", "two", foo="bar", bar="baz")
+    assert loader.args == ("one", "two")
+    assert loader.foo == "bar"
+    assert loader.bar == "baz"
+
+
+def test_ipld_publisher():
+    ipld_publisher = component.ipld_publisher("testing", "one", "two", foo="bar", bar="baz")
+    assert ipld_publisher.args == ("one", "two")
+    assert ipld_publisher.foo == "bar"
+    assert ipld_publisher.bar == "baz"

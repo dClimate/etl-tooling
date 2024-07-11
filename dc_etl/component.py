@@ -1,3 +1,5 @@
+from dc_etl.ipld.loader import IPLDPublisher
+from dc_etl.load import Loader
 from .combine import Combiner, CombinePreprocessor, CombinePostprocessor
 from .config import _get_component
 from .extract import Extractor
@@ -81,3 +83,29 @@ def transformer(name: str, *args, **kwargs) -> Transformer:
         Any extra keyword arguments are passed to the implementation entry point to get an instance.
     """
     return _get_component("transformer", name, args, kwargs)
+
+
+def loader(name: str, *args, **kwargs) -> Loader:
+    """Get and configure a loader implementation by name.
+
+    Parameters
+    ----------
+    name : str
+        The registered name of the loader implementation to get and configure.
+    **kwargs :
+        Any extra keyword arguments are passed to the implementation entry point to get an instance.
+    """
+    return _get_component("loader", name, args, kwargs)
+
+
+def ipld_publisher(name: str, *args, **kwargs) -> IPLDPublisher:
+    """Get and configure a ipld_publisher implementation by name.
+
+    Parameters
+    ----------
+    name : str
+        The registered name of the ipld_publisher implementation to get and configure.
+    **kwargs :
+        Any extra keyword arguments are passed to the implementation entry point to get an instance.
+    """
+    return _get_component("ipld_publisher", name, args, kwargs)

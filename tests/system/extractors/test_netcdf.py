@@ -15,7 +15,7 @@ class TestNetCDFExtractor:
         span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
         sources = CPCFetcher("us_precip", cache).fetch(span)
         extractor = NetCDFExtractor()
-        zarr_jsons = list(map(extractor.extract, sources))
+        zarr_jsons = list(map(extractor, sources))
         datasets = [open_dataset(zarr_json) for zarr_json in zarr_jsons]
 
         assert len(datasets) == 3
@@ -35,7 +35,7 @@ class TestNetCDFExtractor:
         span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
         sources = CPCFetcher("us_precip", cache).fetch(span)
         extractor = NetCDFExtractor(output_folder=output)
-        zarr_jsons = list(map(extractor.extract, sources))
+        zarr_jsons = list(map(extractor, sources))
         datasets = [open_dataset(zarr_json) for zarr_json in zarr_jsons]
 
         assert len(datasets) == 3
@@ -63,7 +63,7 @@ class TestNetCDFExtractor:
         span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
         sources = CPCFetcher("us_precip").fetch(span)
         extractor = NetCDFExtractor(output_folder=output)
-        zarr_jsons = list(map(extractor.extract, sources))
+        zarr_jsons = list(map(extractor, sources))
         datasets = [open_dataset(zarr_json) for zarr_json in zarr_jsons]
 
         assert len(datasets) == 3

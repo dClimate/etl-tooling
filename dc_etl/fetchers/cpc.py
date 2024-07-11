@@ -20,7 +20,7 @@ _GLOB = {
     "us_precip": ["/Datasets/cpc_us_precip/precip.V1.0.*.nc", "/Datasets/cpc_us_precip/RT/precip.V1.0.*.nc"],
 }
 
-_DATA_FILE = re.compile(r".+\d\d\d\d.nc")
+_DATA_FILE = re.compile(r".+\.\d\d\d\d.nc")
 
 
 class CPCFetcher(Fetcher):
@@ -84,8 +84,8 @@ class CPCFetcher(Fetcher):
 
     def fetch(self, span: Timespan) -> Generator[FileSpec, None, None]:
         """Implementation of :meth:`Fetcher.fetch`"""
-        start = span.start.astype(object).year
-        end = span.end.astype(object).year
+        start = span.start.astype("<M8[ms]").astype(object).year
+        end = span.end.astype("<M8[ms]").astype(object).year
 
         for year in range(start, end + 1):
             yield self._get_file_by_year(year)
