@@ -4,7 +4,7 @@ import xarray
 from dc_etl.extractors.netcdf import NetCDFExtractor
 from dc_etl.fetch import Timespan
 from dc_etl.fetchers.cpc import CPCFetcher
-from dc_etl.filespec import File
+from dc_etl.filespec import FileSpec
 
 from tests.conftest import npdate
 
@@ -78,7 +78,7 @@ class TestNetCDFExtractor:
             assert len(output.fs.glob(f"{output.path}/*{year}.json")) == 1
 
 
-def open_dataset(source: File):
+def open_dataset(source: FileSpec):
     return xarray.open_dataset(
         "reference://",
         engine="zarr",

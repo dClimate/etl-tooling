@@ -8,7 +8,7 @@ from importlib.metadata import entry_points
 import yaml
 
 from dc_etl import errors
-from dc_etl.filespec import File
+from dc_etl.filespec import FileSpec
 
 _MISSING = object()
 
@@ -19,7 +19,7 @@ class _Configuration(collections.UserDict):
     """
 
     @classmethod
-    def from_yaml(cls, path: File):
+    def from_yaml(cls, path: FileSpec):
         data = yaml.load(path.open(), Loader=yaml.Loader)
         return cls(data, path.path, [])
 

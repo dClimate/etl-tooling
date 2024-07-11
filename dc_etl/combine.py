@@ -8,7 +8,7 @@ import xarray
 
 from kerchunk import combine
 
-from .filespec import File
+from .filespec import FileSpec
 
 
 class Combiner(abc.ABC):
@@ -19,7 +19,7 @@ class Combiner(abc.ABC):
     """
 
     @abc.abstractmethod
-    def __call__(self, sources: list[File]) -> xarray.Dataset:
+    def __call__(self, sources: list[FileSpec]) -> xarray.Dataset:
         """Generate a MultiZarr from single Zarr JSONs.
 
         Parameters
@@ -73,7 +73,7 @@ class DefaultCombiner(Combiner):
 
     def __init__(
         self,
-        output_folder: File,
+        output_folder: FileSpec,
         concat_dims: list[str],
         identical_dims: list[str],
         preprocessors: list[CombinePreprocessor] = (),
@@ -85,7 +85,7 @@ class DefaultCombiner(Combiner):
         self.preprocessors = preprocessors
         self.postprocessors = postprocessors
 
-    def __call__(self, sources: list[File]) -> xarray.Dataset:
+    def __call__(self, sources: list[FileSpec]) -> xarray.Dataset:
         """Implementation of meth:`Combiner.__call__`.
 
         Calls `kerchunk.MultiZarrToZarr`.
