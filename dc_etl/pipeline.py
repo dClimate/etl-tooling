@@ -9,6 +9,7 @@ from dc_etl.config import _Configuration
 from dc_etl.extract import Extractor
 from dc_etl.fetch import Fetcher
 from dc_etl.filespec import FileSpec
+from dc_etl.load import Loader
 from dc_etl.transform import Transformer, identity
 
 
@@ -25,6 +26,8 @@ class Pipeline:
         The combiner used to merge single Zarr JSONs into a MultiZarr JSON.
     transformer: Transformer | None
         An optional transformer to massage dataset after combining, before loading.
+    loader: Loader
+        Loader used to load trasnformed data into final datastore.
     """
 
     @classmethod
@@ -45,11 +48,15 @@ class Pipeline:
             transformer = config["transformer"].as_component("transformer")
         else:
             transformer = identity
+        loader = config["loader"].as_component("loader")
 
-        return Pipeline(fetcher, extractor, combiner, transformer)
+        return Pipeline(fetcher, extractor, combiner, transformer, loader)
 
-    def __init__(self, fetcher: Fetcher, extractor: Extractor, combiner: Combiner, transformer: Transformer):
+    def __init__(
+        self, fetcher: Fetcher, extractor: Extractor, combiner: Combiner, transformer: Transformer, loader: Loader
+    ):
         self.fetcher = fetcher
         self.extractor = extractor
         self.combiner = combiner
         self.transformer = transformer
+        self.loader = loader

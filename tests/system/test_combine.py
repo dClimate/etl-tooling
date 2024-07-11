@@ -11,7 +11,7 @@ class TestDefaultCombiner:
         sources = component.fetcher("cpc", "us_precip", cache=cache).fetch(span)
         extractor = component.extractor("netcdf")
         zarr_jsons = list(map(extractor.extract, sources))
-        multizarr = cache / "cpc" / "us_precip" / "combined-cpc-us-precip-1982-1984.json"
+        multizarr = cache / "combined"
         combine = component.combiner(
             "default",
             multizarr,

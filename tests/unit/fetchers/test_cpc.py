@@ -46,6 +46,25 @@ class TestCPCFetcher:
         assert span.end == numpy.datetime64("1972-12-31")
 
     @pytest.mark.usefixtures("patch_fs")
+    def test_get_remote_timespan_with_cache(self, tmpdir, mocker):
+        cache = FileSpec(fsspec.filesystem("file"), str(tmpdir))
+        fetcher = CPCFetcher("us_precip", cache)
+        span = fetcher.get_remote_timespan()
+        assert span.start == numpy.datetime64("1970-01-01")
+        assert span.end == numpy.datetime64("1972-12-31")
+
+        prefetched = os.listdir(tmpdir)
+        assert len(prefetched) == 2
+        assert "precip.V1.0.1970.nc" in prefetched
+        assert "precip.V1.0.1972.nc" in prefetched
+
+        # This time it should use the cache
+        fetcher = CPCFetcher("us_precip", cache)  # Bust functools.cache decorator on get_remote_timespan
+        span = fetcher.get_remote_timespan()
+        assert span.start == numpy.datetime64("1970-01-01")
+        assert span.end == numpy.datetime64("1972-12-31")
+
+    @pytest.mark.usefixtures("patch_fs")
     def test_prefetch_noop(self):
         fetcher = CPCFetcher("us_precip")
         span = Timespan(numpy.datetime64("1971-05-12"), numpy.datetime64("1972-07-07"))
@@ -85,7 +104,7 @@ class TestCPCFetcher:
 
     @pytest.mark.usefixtures("patch_fs")
     def test_fetch_with_cache(self, tmpdir, mocker):
-        cache = FileSpec(fsspec.filesystem("file"), str(tmpdir))
+        cache = FileSpec(fsspec.filesystem("file", auto_mkdir=True), str(tmpdir)) / "us_precip"
 
         fetcher = CPCFetcher("us_precip", cache)
         span = Timespan(numpy.datetime64("1971-05-12"), numpy.datetime64("1972-07-07"))
@@ -93,9 +112,9 @@ class TestCPCFetcher:
         files = list(fetcher.fetch(span))
         assert len(files) == 2
         assert files[0].fs is cache.fs
-        assert files[0].path == f"{tmpdir}/precip.V1.0.1971.nc"
+        assert files[0].path == f"{tmpdir}/us_precip/precip.V1.0.1971.nc"
         assert files[1].fs is cache.fs
-        assert files[1].path == f"{tmpdir}/precip.V1.0.1972.nc"
+        assert files[1].path == f"{tmpdir}/us_precip/precip.V1.0.1972.nc"
 
         fetched = [xarray.open_dataset(file.open()) for file in files]
         assert fetched[0].time.data[0] == numpy.datetime64("1971-01-01")
@@ -109,15 +128,23 @@ class TestCPCFetcher:
         files = list(fetcher.fetch(span))
         assert len(files) == 2
         assert files[0].fs is cache.fs
-        assert files[0].path == f"{tmpdir}/precip.V1.0.1971.nc"
+        assert files[0].path == f"{tmpdir}/us_precip/precip.V1.0.1971.nc"
         assert files[1].fs is cache.fs
-        assert files[1].path == f"{tmpdir}/precip.V1.0.1972.nc"
+        assert files[1].path == f"{tmpdir}/us_precip/precip.V1.0.1972.nc"
 
         fetched = [xarray.open_dataset(file.open()) for file in files]
         assert fetched[0].time.data[0] == numpy.datetime64("1971-01-01")
         assert fetched[0].time.data[-1] == numpy.datetime64("1971-12-31")
         assert fetched[1].time.data[0] == numpy.datetime64("1972-01-01")
         assert fetched[1].time.data[-1] == numpy.datetime64("1972-12-31")
+
+    @pytest.mark.usefixtures("patch_fs")
+    def test_fetch_out_of_bounds(self):
+        fetcher = CPCFetcher("us_precip")
+        span = Timespan(numpy.datetime64("1969-05-12"), numpy.datetime64("1972-07-07"))
+
+        with pytest.raises(KeyError):
+            list(fetcher.fetch(span))
 
 
 @pytest.fixture(scope="session")

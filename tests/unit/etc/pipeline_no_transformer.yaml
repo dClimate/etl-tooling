@@ -9,3 +9,6 @@ extractor:
 combiner:
   name: testing
   arg: value
+loader:
+  name: testing
+  load: it

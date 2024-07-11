@@ -38,7 +38,7 @@ class TestDefaultCombiner:
     def test__from_config(self):
         config = _Configuration(
             {
-                "output": "put/it/here",
+                "output_folder": "put/it/here",
                 "concat_dims": ["a"],
                 "identical_dims": ["b", "c"],
                 "preprocessors": [{"name": "testing", "one": "two"}, {"name": "testing", "three": "four"}],
@@ -48,7 +48,7 @@ class TestDefaultCombiner:
             [],
         )
         combiner = combine_module.DefaultCombiner._from_config(config)
-        assert combiner.output == "put/it/here"
+        assert combiner.output_folder == "put/it/here"
         assert combiner.concat_dims == ["a"]
         assert combiner.identical_dims == ["b", "c"]
         assert combiner.preprocessors[0].one == "two"
@@ -59,6 +59,8 @@ class TestDefaultCombiner:
     def test___call__(self, tmpdir, mocker):
         kerchunk = mocker.patch("dc_etl.combine.combine")
         xarray = mocker.patch("dc_etl.combine.xarray")
+        time = mocker.patch("dc_etl.combine.time")
+        time.time.return_value = 42
 
         pre1 = mock.Mock(return_value="what's your name?")
         pre2 = mock.Mock(return_value="my name is george")
@@ -67,14 +69,14 @@ class TestDefaultCombiner:
 
         source1 = filespec.FileSpec(fsspec.filesystem("file"), "path/one")
         source2 = filespec.FileSpec(fsspec.filesystem("file"), "path/two")
-        outfile = filespec.FileSpec(fsspec.filesystem("file"), str(tmpdir)) / "output_zarr.json"
+        outfile = filespec.FileSpec(fsspec.filesystem("file"), str(tmpdir)) / "combined_zarr_42.json"
 
         kerchunk.MultiZarrToZarr = MockMultiZarrToZarr(
-            [source1, source2], "file", ["a", "b"], ["c", "d"], "my name is george", "i have a cheeseburger"
+            [source1.path, source2.path], "file", ["a", "b"], ["c", "d"], "my name is george", "i have a cheeseburger"
         )
 
         combine = combine_module.DefaultCombiner(
-            outfile,
+            outfile.parent,
             ["a", "b"],
             ["c", "d"],
             preprocessors=[pre1, pre2],

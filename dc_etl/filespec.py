@@ -18,7 +18,7 @@ class FileSpec(typing.NamedTuple):
 
     @classmethod
     def _load_yaml(cls, loader, node) -> FileSpec:
-        from .pipeline import _Configuration  # Avoid circular import
+        from .config import _Configuration  # Avoid circular import
 
         config = _Configuration(loader.construct_mapping(node), loader.name, [])
         fs = config.pop("fs")
@@ -74,3 +74,12 @@ class FileSpec(typing.NamedTuple):
         """
         path = f"{self.path.rstrip('/')}/{other}"
         return type(self)(self.fs, path)
+
+    @property
+    def parent(self) -> FileSpec:
+        split = self.path.rstrip("/").rsplit("/", 1)
+        if len(split) == 2:
+            parent, _ = split
+            if not parent:
+                parent = "/"
+            return type(self)(self.fs, parent)

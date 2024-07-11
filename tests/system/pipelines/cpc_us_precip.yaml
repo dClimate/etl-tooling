@@ -1,28 +1,28 @@
 ---
 fetcher:
   name: cpc
-  dataset: global_precip
+  dataset: us_precip
   cache: !filespec
     fs: file
-    path: some/path/to/somewhere
+    path: cached_data/cpc/us_precip
     auto_mkdir: True
 
 extractor:
   name: netcdf
-  inline_threshold: 42
   output_folder: !filespec
     fs: file
-    path: output/folder
+    path: cached_data/cpc/us_precip
 
 combiner:
   output_folder: !filespec
     fs: file
-    path: combined/output
+    path: cached_data/cpc/us_precip/combined/
+    auto_mkdir: True
   concat_dims:
     - time
   identical_dims:
-    - latitude
-    - longitude
+    - lat
+    - lon
   preprocessors:
     - name: fix_fill_value
       fill_value: -9.96921e36
@@ -41,4 +41,6 @@ loader:
   time_dim: time
   publisher:
     name: local_file
-    path: cid/goes/here
+    path: !filespec
+      fs: file
+      path: cached_data/cpc/us_precip/zarr.cid

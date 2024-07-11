@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import abc
+import time
 
 import orjson
 import xarray
@@ -18,15 +19,13 @@ class Combiner(abc.ABC):
     """
 
     @abc.abstractmethod
-    def __call__(self, sources: list[FileSpec], dest: FileSpec) -> xarray.Dataset:
+    def __call__(self, sources: list[FileSpec]) -> xarray.Dataset:
         """Generate a MultiZarr from single Zarr JSONs.
 
         Parameters
         ----------
         sources: list[FileSpec]
             List of individual zarr json files to combine
-        dest: FileSepc
-            Location to write combined zarr json to
 
         Returns
         -------
@@ -43,8 +42,8 @@ class DefaultCombiner(Combiner):
 
     Parameters
     ----------
-    output : FileSpec
-        Location of file to write combined Zarr JSON to
+    output_folder : FileSpec
+        Location of folder to write combined Zarr JSON to. The filename will be generated dynamically to be unique.
 
     concat_dims : list[str]
         Names of the dimensions to expand with
@@ -74,13 +73,13 @@ class DefaultCombiner(Combiner):
 
     def __init__(
         self,
-        output: FileSpec,
+        output_folder: FileSpec,
         concat_dims: list[str],
         identical_dims: list[str],
         preprocessors: list[CombinePreprocessor] = (),
         postprocessors: list[CombinePostprocessor] = (),
     ):
-        self.output = output
+        self.output_folder = output_folder
         self.concat_dims = concat_dims
         self.identical_dims = identical_dims
         self.preprocessors = preprocessors
@@ -111,7 +110,7 @@ class DefaultCombiner(Combiner):
             return postprocess
 
         ensemble = combine.MultiZarrToZarr(
-            sources,
+            [source.path for source in sources],
             remote_protocol=sources[0].fs.protocol[0],  # Does this always work for protocol or just for "file"?
             concat_dims=self.concat_dims,
             identical_dims=self.identical_dims,
@@ -119,7 +118,8 @@ class DefaultCombiner(Combiner):
             postprocess=postprocessor(self.postprocessors),
         )
 
-        with self.output.open("wb") as f_out:
+        output = self.output_folder / f"combined_zarr_{int(time.time()):d}.json"
+        with output.open("wb") as f_out:
             f_out.write(orjson.dumps(ensemble.translate()))
 
         return xarray.open_dataset(
@@ -128,8 +128,8 @@ class DefaultCombiner(Combiner):
             backend_kwargs={
                 "consolidated": False,
                 "storage_options": {
-                    "fo": self.output.path,
-                    "remote_protocol": self.output.fs.protocol[0],  # Does this always work for protocol?
+                    "fo": output.path,
+                    "remote_protocol": output.fs.protocol[0],  # Does this always work for protocol?
                 },
             },
         )
