@@ -1,5 +1,4 @@
-"""Test something a lot like a real pipeline for CPC.
-"""
+"""Test something a lot like a real pipeline for CPC."""
 
 import numcodecs
 
@@ -47,13 +46,19 @@ def test_declarative_configuration():
     dataset = pipeline.combiner(extracted)
     dataset = pipeline.transformer(dataset)
 
-    old_value = dataset.precip.sel(time=date, latitude=45.125, longitude=-104.875).copy()
+    old_value = dataset.precip.sel(
+        time=date, latitude=45.125, longitude=-104.875
+    ).copy()
     new_value = 8888.875
     dataset.precip.loc[dict(time=date, latitude=45.125, longitude=-104.875)] = new_value
     assert old_value != new_value
-    assert dataset.precip.sel(time=date, latitude=45.125, longitude=-104.875) == new_value
+    assert (
+        dataset.precip.sel(time=date, latitude=45.125, longitude=-104.875) == new_value
+    )
 
     pipeline.loader.replace(dataset, span)
 
     dataset = pipeline.loader.dataset()
-    assert dataset.precip.sel(time=date, latitude=45.125, longitude=-104.875) == new_value
+    assert (
+        dataset.precip.sel(time=date, latitude=45.125, longitude=-104.875) == new_value
+    )

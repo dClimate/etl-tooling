@@ -65,9 +65,13 @@ class DefaultCombiner(Combiner):
 
     @classmethod
     def _from_config(cls, config) -> DefaultCombiner:
-        config["preprocessors"] = [pre.as_component("combine_preprocessor") for pre in config.get("preprocessors", ())]
+        config["preprocessors"] = [
+            pre.as_component("combine_preprocessor")
+            for pre in config.get("preprocessors", ())
+        ]
         config["postprocessors"] = [
-            post.as_component("combine_postprocessor") for post in config.get("postprocessors", ())
+            post.as_component("combine_postprocessor")
+            for post in config.get("postprocessors", ())
         ]
         return cls(**config)
 
@@ -111,7 +115,9 @@ class DefaultCombiner(Combiner):
 
         ensemble = combine.MultiZarrToZarr(
             [source.path for source in sources],
-            remote_protocol=sources[0].fs.protocol[0],  # Does this always work for protocol or just for "file"?
+            remote_protocol=sources[0].fs.protocol[
+                0
+            ],  # Does this always work for protocol or just for "file"?
             concat_dims=self.concat_dims,
             identical_dims=self.identical_dims,
             preprocess=preprocessor(self.preprocessors),
@@ -129,7 +135,9 @@ class DefaultCombiner(Combiner):
                 "consolidated": False,
                 "storage_options": {
                     "fo": output.path,
-                    "remote_protocol": output.fs.protocol[0],  # Does this always work for protocol?
+                    "remote_protocol": output.fs.protocol[
+                        0
+                    ],  # Does this always work for protocol?
                 },
             },
         )

@@ -7,23 +7,31 @@ from tests.conftest import npdate
 class TestCompositeTransformer:
     def test_transform(self, cache):
         cache = cache / "cpc" / "us_precip"
-        span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
+        span = Timespan(
+            npdate(1982, 11, 29), npdate(1984, 6, 25)
+        )  # Thriller, Purple Rain
         sources = component.fetcher("cpc", "us_precip", cache=cache).fetch(span)
         extractor = component.extractor("netcdf")
         zarr_jsons = list(map(extractor, sources))
-        multizarr = cache / "cpc" / "us_precip" / "combined-cpc-us-precip-1982-1984.json"
+        multizarr = (
+            cache / "cpc" / "us_precip" / "combined-cpc-us-precip-1982-1984.json"
+        )
         combine = component.combiner(
             "default",
             multizarr,
             concat_dims=["time"],
             identical_dims=["latitude", "longitude"],
-            preprocessors=[component.combine_preprocessor("fix_fill_value", -9.96921e36)],
+            preprocessors=[
+                component.combine_preprocessor("fix_fill_value", -9.96921e36)
+            ],
         )
         dataset = combine(zarr_jsons)
 
         transform = component.transformer(
             "composite",
-            component.transformer("rename_dims", {"lat": "latitude", "lon": "longitude"}),
+            component.transformer(
+                "rename_dims", {"lat": "latitude", "lon": "longitude"}
+            ),
             component.transformer("normalize_longitudes"),
         )
 

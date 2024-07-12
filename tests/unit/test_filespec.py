@@ -128,11 +128,16 @@ class TestFileSpec:
 
     @staticmethod
     def test_parent():
-        assert filespec.FileSpec(None, "/some/path/to/file").parent.path == "/some/path/to"
+        assert (
+            filespec.FileSpec(None, "/some/path/to/file").parent.path == "/some/path/to"
+        )
 
     @staticmethod
     def test_parent_trailing_slash():
-        assert filespec.FileSpec(None, "/some/path/to/file/").parent.path == "/some/path/to"
+        assert (
+            filespec.FileSpec(None, "/some/path/to/file/").parent.path
+            == "/some/path/to"
+        )
 
     @staticmethod
     def test_parent_no_parent():

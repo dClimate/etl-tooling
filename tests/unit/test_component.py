@@ -23,14 +23,18 @@ def test_combiner():
 
 
 def test_combine_preprocessor():
-    combine_preprocessor = component.combine_preprocessor("testing", "one", "two", foo="bar", bar="baz")
+    combine_preprocessor = component.combine_preprocessor(
+        "testing", "one", "two", foo="bar", bar="baz"
+    )
     assert combine_preprocessor.args == ("one", "two")
     assert combine_preprocessor.foo == "bar"
     assert combine_preprocessor.bar == "baz"
 
 
 def test_combine_postprocessor():
-    combine_postprocessor = component.combine_postprocessor("testing", "one", "two", foo="bar", bar="baz")
+    combine_postprocessor = component.combine_postprocessor(
+        "testing", "one", "two", foo="bar", bar="baz"
+    )
     assert combine_postprocessor.args == ("one", "two")
     assert combine_postprocessor.foo == "bar"
     assert combine_postprocessor.bar == "baz"
@@ -51,7 +55,9 @@ def test_loader():
 
 
 def test_ipld_publisher():
-    ipld_publisher = component.ipld_publisher("testing", "one", "two", foo="bar", bar="baz")
+    ipld_publisher = component.ipld_publisher(
+        "testing", "one", "two", foo="bar", bar="baz"
+    )
     assert ipld_publisher.args == ("one", "two")
     assert ipld_publisher.foo == "bar"
     assert ipld_publisher.bar == "baz"

@@ -8,8 +8,15 @@ from dc_etl.config import _Configuration
 
 
 class MockMultiZarrToZarr:
-
-    def __init__(self, sources, remote_protocol, concat_dims, identical_dims, preprocessed, postprocessed):
+    def __init__(
+        self,
+        sources,
+        remote_protocol,
+        concat_dims,
+        identical_dims,
+        preprocessed,
+        postprocessed,
+    ):
         self.expected_sources = sources
         self.expected_remote_protocol = remote_protocol
         self.expected_concat_dims = concat_dims
@@ -17,7 +24,15 @@ class MockMultiZarrToZarr:
         self.expected_preprocessed = preprocessed
         self.expected_postprocessed = postprocessed
 
-    def __call__(self, sources, remote_protocol, concat_dims, identical_dims, preprocess, postprocess):
+    def __call__(
+        self,
+        sources,
+        remote_protocol,
+        concat_dims,
+        identical_dims,
+        preprocess,
+        postprocess,
+    ):
         assert self.expected_sources == sources
         assert self.expected_remote_protocol == remote_protocol
         assert self.expected_concat_dims == concat_dims
@@ -33,15 +48,20 @@ class MockMultiZarrToZarr:
 
 
 class TestDefaultCombiner:
-
     def test__from_config(self):
         config = _Configuration(
             {
                 "output_folder": "put/it/here",
                 "concat_dims": ["a"],
                 "identical_dims": ["b", "c"],
-                "preprocessors": [{"name": "testing", "one": "two"}, {"name": "testing", "three": "four"}],
-                "postprocessors": [{"name": "testing", "five": "six"}, {"name": "testing", "seven": "eight"}],
+                "preprocessors": [
+                    {"name": "testing", "one": "two"},
+                    {"name": "testing", "three": "four"},
+                ],
+                "postprocessors": [
+                    {"name": "testing", "five": "six"},
+                    {"name": "testing", "seven": "eight"},
+                ],
             },
             "some/config/file",
             [],
@@ -71,7 +91,12 @@ class TestDefaultCombiner:
         outfile = filespec.file(tmpdir) / "combined_zarr_42.json"
 
         kerchunk.MultiZarrToZarr = MockMultiZarrToZarr(
-            [source1.path, source2.path], "file", ["a", "b"], ["c", "d"], "my name is george", "i have a cheeseburger"
+            [source1.path, source2.path],
+            "file",
+            ["a", "b"],
+            ["c", "d"],
+            "my name is george",
+            "i have a cheeseburger",
         )
 
         combine = combine_module.DefaultCombiner(

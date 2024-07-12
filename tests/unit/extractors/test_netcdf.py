@@ -7,7 +7,6 @@ from dc_etl.filespec import file
 
 
 class TestNetCDFExtractor:
-
     def test_constructor_defaults(self):
         extractor = NetCDFExtractor()
         assert extractor.output_folder is None
@@ -32,7 +31,9 @@ class TestNetCDFExtractor:
 
         assert orjson.loads(extracted.open().read()) == {"hi": "mom"}
         assert extracted.path == "/data/file.json"
-        hdf.SingleHdf5ToZarr.assert_called_once_with(src, "/data/file.nc", inline_threshold=5000)
+        hdf.SingleHdf5ToZarr.assert_called_once_with(
+            src, "/data/file.nc", inline_threshold=5000
+        )
 
     def test_extract_with_output_folder_and_inline_threshold(self, mocker):
         hdf = mocker.patch("dc_etl.extractors.netcdf.hdf")
@@ -50,4 +51,6 @@ class TestNetCDFExtractor:
 
         assert orjson.loads(extracted.open().read()) == {"hi": "mom"}
         assert extracted.path == "/extracted/file.json"
-        hdf.SingleHdf5ToZarr.assert_called_once_with(src, "/data/file.nc", inline_threshold=42)
+        hdf.SingleHdf5ToZarr.assert_called_once_with(
+            src, "/data/file.nc", inline_threshold=42
+        )

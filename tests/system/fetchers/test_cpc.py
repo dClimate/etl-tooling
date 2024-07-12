@@ -9,7 +9,6 @@ from ...conftest import npdate
 
 
 class TestCPCFetcher:
-
     @pytest.mark.parametrize(
         "dataset,start",
         [
@@ -27,17 +26,23 @@ class TestCPCFetcher:
         assert span.start == start
         assert span.end >= nyd_2024
 
-    @pytest.mark.parametrize("dataset", ["global_precip", "us_precip", "global_temp_max", "global_temp_min"])
+    @pytest.mark.parametrize(
+        "dataset", ["global_precip", "us_precip", "global_temp_max", "global_temp_min"]
+    )
     def test_fetch(self, dataset, cache):
         fetcher = CPCFetcher(dataset, cache / "cpc" / dataset)
-        span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
+        span = Timespan(
+            npdate(1982, 11, 29), npdate(1984, 6, 25)
+        )  # Thriller, Purple Rain
         files = list(fetcher.fetch(span))
         for file, year in zip(files, range(1982, 1985)):
             ds = xarray.load_dataset(file.open())
             assert ds.time[0].values == npdate(year, 1, 1)
             assert ds.time[-1].values == npdate(year, 12, 31)
 
-    @pytest.mark.parametrize("dataset", ["global_precip", "us_precip", "global_temp_max", "global_temp_min"])
+    @pytest.mark.parametrize(
+        "dataset", ["global_precip", "us_precip", "global_temp_max", "global_temp_min"]
+    )
     def test_prefetch(self, dataset, cache):
         cache = cache / "cpc" / dataset
         fetcher = CPCFetcher(dataset, cache)

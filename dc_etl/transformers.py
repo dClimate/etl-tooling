@@ -23,7 +23,12 @@ class Composite:
 
     @classmethod
     def _from_config(cls, config):
-        return cls(*[transformer.as_component("transformer") for transformer in config["transformers"]])
+        return cls(
+            *[
+                transformer.as_component("transformer")
+                for transformer in config["transformers"]
+            ]
+        )
 
     def __init__(self, *transformers: Transformer):
         self.transformers = transformers
@@ -65,7 +70,9 @@ def normalize_longitudes() -> Transformer:
     """
 
     def normalize_longitudes(dataset: xarray.Dataset) -> xarray.Dataset:
-        dataset = dataset.assign_coords(longitude=(((dataset.longitude + 180) % 360) - 180))
+        dataset = dataset.assign_coords(
+            longitude=(((dataset.longitude + 180) % 360) - 180)
+        )
 
         # After converting, the longitudes may still start at zero. This reorders the longitude coordinates from -180
         # to 180 if necessary.

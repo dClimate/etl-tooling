@@ -8,7 +8,14 @@ from dc_etl.filespec import file
 @pytest.fixture
 def config():
     return _Configuration(
-        {"one": {"a": "b"}, "two": [{"name": "testing", "foo": "bar"}, {"animal": "zebra"}, {"name": "missing"}]},
+        {
+            "one": {"a": "b"},
+            "two": [
+                {"name": "testing", "foo": "bar"},
+                {"animal": "zebra"},
+                {"name": "missing"},
+            ],
+        },
         "some/config_file",
         [],
     )

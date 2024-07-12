@@ -63,7 +63,10 @@ def main(pipeline: Pipeline):
 
         else:
             dataset = pipeline.loader.dataset()
-            code.interact("Interactive Python shell. The dataset is available as 'ds'.", local={"ds": dataset})
+            code.interact(
+                "Interactive Python shell. The dataset is available as 'ds'.",
+                local={"ds": dataset},
+            )
 
     except:
         if args["--pdb"]:
@@ -96,7 +99,7 @@ def _parse_timedelta(s: str):
         if s.endswith("Y"):
             years = int(s[:-1])
             return relativedelta(years=years)
-    except:
+    except:  # noqa E772
         pass
 
     raise docopt.DocoptExit(f"Unable to parse timespan: {s}")
@@ -108,4 +111,6 @@ def _add_delta(timestamp, delta):
     timestamp = timestamp + delta
 
     # We only need to the day precision for these examples
-    return numpy.datetime64(f"{timestamp.year}-{timestamp.month:02d}-{timestamp.day:02d}")
+    return numpy.datetime64(
+        f"{timestamp.year}-{timestamp.month:02d}-{timestamp.day:02d}"
+    )

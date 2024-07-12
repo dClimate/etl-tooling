@@ -32,7 +32,9 @@ class NetCDFExtractor(Extractor):
             dest = source.with_suffix("json")
 
         with source.open() as f_in:
-            zarr_json = hdf.SingleHdf5ToZarr(f_in, source.path, inline_threshold=self.inline_threshold)
+            zarr_json = hdf.SingleHdf5ToZarr(
+                f_in, source.path, inline_threshold=self.inline_threshold
+            )
             with dest.open("wb") as f_out:
                 f_out.write(orjson.dumps(zarr_json.translate()))
 
