@@ -1,4 +1,5 @@
 import nox
+import socket
 
 
 COVERAGE_FAIL_LIMIT_PERCENT = 70
@@ -32,10 +33,23 @@ def unit(session):
     )
 
 
+def check_kubo():
+    """Check if IPFS (Kubo) is running by attempting to connect to its API port."""
+    host = "localhost"
+    port = 5001  # Default IPFS API port
+
+    try:
+        # Attempt to create a connection to the IPFS API port
+        with socket.create_connection((host, port), timeout=5) as _:
+            return True
+    except (socket.timeout, ConnectionRefusedError):
+        return False
+
+
 @nox.session()
 def system(session):
-    # if not check_kubo():
-    #     session.skip("No IPFS server running")
+    if not check_kubo():
+        session.skip("No IPFS server running")
 
     session.install("-e", ".[testing]")
     session.run(
