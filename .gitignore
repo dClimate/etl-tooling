@@ -3,5 +3,7 @@
 .coverage
 __pycache__
 
+.DS_Store
+build
 venv*
 pyrightconfig.json
