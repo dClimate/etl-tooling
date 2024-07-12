@@ -36,12 +36,13 @@ def main():
             "composite",
             component.transformer("rename_dims", {"lat": "latitude", "lon": "longitude"}),
             component.transformer("normalize_longitudes"),
+            component.transformer("compress", ["precip"]),
         ),
         loader=component.loader(
             "ipld", time_dim="time", publisher=component.ipld_publisher("local_file", CACHE / "zarr_head.cid")
         ),
     )
-
+p
     cli.main(pipeline)
 
 

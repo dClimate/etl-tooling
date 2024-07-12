@@ -57,6 +57,7 @@ def mock_dataset(data, dims):
 
     name, data = data
     data = xarray.DataArray(data, dims=coord_names, coords=coords)
+    data.encoding["compressor"] = None
     return xarray.Dataset({name: data})
 
 

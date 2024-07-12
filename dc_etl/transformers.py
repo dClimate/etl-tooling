@@ -1,3 +1,4 @@
+import numcodecs
 import xarray
 
 from .transform import Transformer
@@ -71,3 +72,26 @@ def normalize_longitudes() -> Transformer:
         return dataset.sortby(["latitude", "longitude"])
 
     return normalize_longitudes
+
+
+def compress(variables: list[str]) -> Transformer:
+    """Transformer to add Blosc compression to specific variables, usually the data variable.
+
+    Parameters
+    ----------
+    *variables: list[str]
+        Names of the variables in the dataset to apply compression to.
+
+    Returns
+    -------
+    Transformer :
+        The transformer.
+    """
+
+    def compress(dataset: xarray.Dataset) -> xarray.Dataset:
+        for var in variables:
+            dataset[var].encoding["compressor"] = numcodecs.Blosc()
+
+        return dataset
+
+    return compress

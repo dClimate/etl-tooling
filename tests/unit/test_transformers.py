@@ -1,5 +1,6 @@
 from unittest import mock
 
+import numcodecs
 import numpy
 import pytest
 
@@ -47,6 +48,14 @@ def test_normalize_longitudes(dataset):
     dataset = normalize(dataset)
 
     assert list(dataset.longitude) == [-180, -165, -150, -135, 90, 105, 120, 135, 150, 165]
+
+
+def test_compress(dataset):
+    assert dataset.data.encoding["compressor"] is None
+    compress = transformers.compress(["data"])
+    compress(dataset)
+
+    assert isinstance(dataset.data.encoding["compressor"], numcodecs.Blosc)
 
 
 @pytest.fixture

@@ -1,6 +1,8 @@
 """Test something a lot like a real pipeline for CPC.
 """
 
+import numcodecs
+
 from dc_etl.fetch import Timespan
 from dc_etl.filespec import file
 from dc_etl.pipeline import Pipeline
@@ -23,6 +25,7 @@ def test_declarative_configuration():
     dataset = pipeline.loader.dataset()
     assert dataset.time[0] == npdate(1982, 11, 29)
     assert dataset.time[-1] == npdate(1984, 6, 25)
+    assert isinstance(dataset.precip.encoding["compressor"], numcodecs.Blosc)
 
     # Append some more data
     span = Timespan(npdate(1984, 6, 26), npdate(1985, 9, 30))  # Purple Rain, Rain Dogs
