@@ -24,9 +24,6 @@ jobs:
         run_daemon: true
       id: ipfs_setup
 
-    - name: Install external dependencies via APT
-      run: sudo apt-get update && sudo apt-get install cdo netcdf-bin
-
     - name: Check out repo
       uses: actions/checkout@v4
 
