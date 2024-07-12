@@ -75,10 +75,8 @@ testing = [
     "pytest-mock",
 ]
 dev = [
-    "black",
-    "flake8",
-    "flake8-pyproject",
     "nox",
+    "ruff",
 ]
 doc = [
     "sphinx",
@@ -96,10 +94,5 @@ version_scheme = "post-release"
 local_scheme = "no-local-version"
 write_to = "dc_etl/_version.py"
 
-[tool.black]
-line-length = 119
-
-[tool.flake8]
-# flake8 and black disagree on E203, E701, and W503
-ignore = ["E203", "E701", "W503"]
-max-line-length = 119
+[tool.ruff]
+target-version = "py310"
