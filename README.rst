@@ -32,4 +32,3 @@ There are examples in the `examples` folder that illustrate how this package is 
 `cpc_us_precip`, for instance, by::
 
     $ python examples/cpc_us_precip.py
-

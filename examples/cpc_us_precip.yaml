@@ -32,6 +32,9 @@ transformer:
       lat: latitude
       lon: longitude
   - name: normalize_longitudes
+  - name: compress
+    variables:
+    - precip
 
 loader:
   name: ipld
