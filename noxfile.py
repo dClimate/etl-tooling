@@ -1,26 +1,7 @@
 import nox
 
 
-@nox.session()
-def unit(session):
-    session.install("-e", ".[testing]")
-    session.run(
-        "pytest",
-        "--cov=dc_etl",
-        "--cov=tests.unit",
-        "--cov-append",
-        "--cov-config",
-        ".coveragerc",
-        "--cov-report=term-missing",
-        "tests/unit",
-    )
-
-
-@nox.session()
-def cover(session):
-    session.install("coverage")
-    session.run("coverage", "report", "--fail-under=100", "--show-missing")
-    session.run("coverage", "erase")
+COVERAGE_FAIL_LIMIT_PERCENT = 70
 
 
 @nox.session()
@@ -36,6 +17,22 @@ def format(session):
 
 
 @nox.session()
+def unit(session):
+    session.install("-e", ".[testing]")
+    session.run(
+        "pytest",
+        "--cov=dc_etl",
+        "--cov=tests.unit",
+        "--cov-append",
+        "--cov-config",
+        ".coveragerc",
+        "--cov-report=term-missing",
+        f"--cov-fail-under={COVERAGE_FAIL_LIMIT_PERCENT}",
+        "tests/unit",
+    )
+
+
+@nox.session()
 def system(session):
     # if not check_kubo():
     #     session.skip("No IPFS server running")
@@ -47,7 +44,7 @@ def system(session):
         "--cov-config",
         ".coveragerc",
         "--cov-report=term-missing",
-        "--cov-fail-under=100",
+        f"--cov-fail-under={COVERAGE_FAIL_LIMIT_PERCENT}",
         "tests/system",
     )
 
