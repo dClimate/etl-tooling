@@ -15,6 +15,7 @@ Options:
 
 import code
 import datetime
+import itertools
 import pdb
 import sys
 
@@ -77,7 +78,7 @@ def run_pipeline(pipeline, span, load):
         f"to {span.end.astype('<M8[s]').astype(object):%Y-%m-%d}"
     )
     sources = pipeline.fetcher.fetch(span)
-    extracted = [pipeline.extractor(source) for source in sources]
+    extracted = list(itertools.chain(*[pipeline.extractor(source) for source in sources]))
     combined = pipeline.transformer(pipeline.combiner(extracted))
     load(combined, span)
 
