@@ -2,7 +2,7 @@ import nox
 import socket
 
 
-COVERAGE_FAIL_LIMIT_PERCENT = 70
+COVERAGE_FAIL_LIMIT_PERCENT = 100
 
 
 @nox.session()
