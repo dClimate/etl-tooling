@@ -28,7 +28,7 @@ class TestNetCDFExtractor:
         src = mock_source.open.return_value.__enter__.return_value
 
         extractor = NetCDFExtractor()
-        extracted = extractor(mock_source)
+        extracted = next(extractor(mock_source))
 
         assert orjson.loads(extracted.open().read()) == {"hi": "mom"}
         assert extracted.path == "/data/file.json"
@@ -46,7 +46,7 @@ class TestNetCDFExtractor:
         src = mock_source.open.return_value.__enter__.return_value
 
         extractor = NetCDFExtractor(output_folder=output, inline_threshold=42)
-        extracted = extractor(mock_source)
+        extracted = next(extractor(mock_source))
 
         assert orjson.loads(extracted.open().read()) == {"hi": "mom"}
         assert extracted.path == "/extracted/file.json"

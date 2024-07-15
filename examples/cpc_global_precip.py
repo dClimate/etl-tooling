@@ -42,7 +42,7 @@ def main():
             "ipld", time_dim="time", publisher=component.ipld_publisher("local_file", CACHE / "zarr_head.cid")
         ),
     )
-p
+
     cli.main(pipeline)
 
 

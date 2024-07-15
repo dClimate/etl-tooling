@@ -1,4 +1,5 @@
 import abc
+import typing
 
 from dc_etl.filespec import FileSpec
 
@@ -7,8 +8,8 @@ class Extractor(abc.ABC):
     """Responsible for taking a raw source file and turning it into a single Zarr JSON."""
 
     @abc.abstractmethod
-    def __call__(self, source: FileSpec) -> FileSpec:
-        """Extract a source data file into a single Zarr JSON file.
+    def __call__(self, source: FileSpec) -> typing.Generator[FileSpec, None, None]:
+        """Extract a source data file into one or more single Zarr JSON files.
 
         Parameters
         ----------
