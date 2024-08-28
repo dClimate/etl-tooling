@@ -1,0 +1,55 @@
+# This workflow runs pytest, pytest coverage, formatting checks, and linting checks
+
+name: Check Formatting, Linting, Pytest
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  format-lint-pytest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/0.4.0/install.sh | sh
+
+    - name: Install external dependencies via APT
+      run: sudo apt-get update && sudo apt-get install cdo netcdf-bin
+
+    - name: Install kubo, start daemon
+      uses: ibnesayeed/setup-ipfs@master
+      with:
+        ipfs_version: "0.26.0"
+        run_daemon: true
+
+    - name: Create python virtual environment
+      run: uv venv --python 3.11
+
+    - name: Install python dependencies
+      run: |
+        uv pip compile --all-extras pyproject.toml -o requirements.txt
+        uv pip sync requirements.txt
+
+    # TODO run formatting
+    - name: Check formatting
+      run: ruff format --check
+
+    - name: Linting
+      run: ruff check
+
+    # TODO run pytest and pytest coverage test directly instead of using nox
+    - name: Run test suite
+      run: |
+        nox
