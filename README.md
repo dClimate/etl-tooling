@@ -9,8 +9,10 @@ The documentation (and this code) is still a work in progress.
 Quickstart
 ----------
 
-Create a Python virtual environment using your method of choice and activate it. I like `virtualenvwrapper`,
-personally. Python 3.10 is recommended for now.
+Create a python virtual environment with the current version supported by this library, python 3.11.
+```sh
+$ uv venv --python 3.11
+```
 
 Then, in the directory where you've checked out this repo::
 
