@@ -4,6 +4,9 @@ version = ["0.1.0"]
 authors = [
     { name = "Chris Rossi", email = "chris@christophermrossi.com" }
 ]
+maintainers = [
+    { name = "Abid Sikder", email = "the string 'abid' at dclimate dot net" }
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
