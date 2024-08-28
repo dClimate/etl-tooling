@@ -30,7 +30,7 @@ dependencies = [
     "numpy",
     "orjson",
     "pyyaml",
-    "xarray[io]",
+    "xarray[io,parallel]",
 ]
 
 [project.urls]
