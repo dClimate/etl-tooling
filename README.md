@@ -1,13 +1,11 @@
-===========================
 dClimate ETL Pipeline Tools
-===========================
+======
 
 This package contains tools for creating ETL pipelines for loading gridded data into large, distributed ZARRs.
 
 The documentation (and this code) is still a work in progress.
 
-Quickstart
-----------
+# Quickstart
 
 Create a python virtual environment with the current version supported by this library, python 3.11.
 ```sh
