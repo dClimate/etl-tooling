@@ -34,8 +34,12 @@ jobs:
         ipfs_version: "0.26.0"
         run_daemon: true
 
-    - name: Create python virtual environment
-      run: uv venv --python 3.11
+    # We have to store the path in the GITHUB_ENV variable so that other tasks have access to the virtual e
+    - name: Create and activate python virtual environment
+      run: |
+        uv venv --python 3.11
+        source .venv/bin/activate
+        echo PATH=$PATH >> $GITHUB_ENV
 
     - name: Install python dependencies
       run: |
