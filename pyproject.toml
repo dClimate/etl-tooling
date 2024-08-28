@@ -1,6 +1,5 @@
-# pyproject.toml
 [project]
-name = "dc-etl"
+name = "dc_etl"
 dynamic = ["version"]
 authors = [
     { name = "Chris Rossi", email = "chris@christophermrossi.com" }
