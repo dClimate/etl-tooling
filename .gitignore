@@ -1,6 +1,7 @@
 .vscode
 *.egg-info
 .coverage
+.coverage.*
 __pycache__
 
 venv*
