@@ -46,14 +46,17 @@ jobs:
         uv pip compile --all-extras pyproject.toml -o requirements.txt
         uv pip sync requirements.txt
 
-    # TODO run formatting
     - name: Check formatting
       run: ruff format --check
 
     - name: Linting
       run: ruff check
 
-    # TODO run pytest and pytest coverage test directly instead of using nox
-    - name: Run test suite
-      run: |
-        nox
+    - name: Run unit tests
+      run: bash run-pytest-unit.sh
+
+    - name: Run system tests
+      run: bash run-pytest-system.sh
+
+    - name: Check code coverage from tests
+      run: bash run-coverage-check.sh

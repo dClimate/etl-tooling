@@ -75,7 +75,6 @@ testing = [
     "pytest-mock",
 ]
 dev = [
-    "nox",
     "ruff"
 ]
 doc = [
