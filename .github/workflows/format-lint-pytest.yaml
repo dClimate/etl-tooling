@@ -46,6 +46,10 @@ jobs:
         uv pip compile --all-extras pyproject.toml -o requirements.txt
         uv pip sync requirements.txt
 
+    - name: Register project entrypoints by installing project
+      run: |
+        uv pip install .
+
     - name: Check formatting
       run: ruff format --check
 

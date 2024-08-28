@@ -3,6 +3,8 @@
 .coverage
 .coverage.*
 __pycache__
+# Ignore pip's build results
+build/
 
 venv*
 pyrightconfig.json
