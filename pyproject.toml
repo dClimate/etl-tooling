@@ -5,7 +5,7 @@ authors = [
     { name = "Chris Rossi", email = "chris@christophermrossi.com" }
 ]
 maintainers = [
-    { name = "Abid Sikder", email = "the string 'abid' at dclimate dot net" }
+    { name = "Abid Sikder" }
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
