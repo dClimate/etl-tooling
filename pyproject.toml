@@ -14,12 +14,12 @@ classifiers = [
     "Operating System :: MacOS",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Topic :: Scientific/Engineering :: Atmospheric Science"
+    "Topic :: Scientific/Engineering"
 ]
 description = "Tools for loading climate data into IPFS clusters"
-readme = "README.rst"
+readme = "README.md"
 keywords = ["Climate", "Zarr", "ETL", "IPFS"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "fsspec",
     "kerchunk[hdf]",
