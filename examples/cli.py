@@ -102,7 +102,8 @@ def _parse_timedelta(s: str):
         if s.endswith("Y"):
             years = int(s[:-1])
             return relativedelta(years=years)
-    except:
+    # The noqa avoids "bare except" error from linter
+    except: # noqa: E722
         pass
 
     raise docopt.DocoptExit(f"Unable to parse timespan: {s}")

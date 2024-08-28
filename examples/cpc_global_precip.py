@@ -5,7 +5,6 @@ This example uses the imperative config option, which allows you to construct a 
 that uses a YAML config file instead of Python code, see the CPC US Precipitation example.
 """
 
-import os
 import pathlib
 
 from dc_etl import filespec, component
