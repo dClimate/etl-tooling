@@ -6,7 +6,6 @@ from dc_etl.fetch import Timespan
 
 
 class Loader(abc.ABC):
-
     @abc.abstractmethod
     def initial(self, dataset: xarray.Dataset, span: Timespan | None = None):
         """Start writing a new dataset."""

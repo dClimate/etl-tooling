@@ -13,7 +13,12 @@ from .conftest import mock_dataset
 class TestComposite:
     def test__from_config(self):
         config = _Configuration(
-            {"transformers": [{"name": "testing", "trans": "form"}, {"name": "testing", "mut": "ate"}]},
+            {
+                "transformers": [
+                    {"name": "testing", "trans": "form"},
+                    {"name": "testing", "mut": "ate"},
+                ]
+            },
             "some/config/file",
             [],
         )
@@ -47,7 +52,18 @@ def test_normalize_longitudes(dataset):
     normalize = transformers.normalize_longitudes()
     dataset = normalize(dataset)
 
-    assert list(dataset.longitude) == [-180, -165, -150, -135, 90, 105, 120, 135, 150, 165]
+    assert list(dataset.longitude) == [
+        -180,
+        -165,
+        -150,
+        -135,
+        90,
+        105,
+        120,
+        135,
+        150,
+        165,
+    ]
 
 
 def test_compress(dataset):
@@ -63,7 +79,12 @@ def dataset():
     latitude = numpy.arange(-50, 50, 10)
     longitude = numpy.arange(90, 240, 15)
     time = numpy.arange(
-        numpy.datetime64("2010-05-12", "ns"), numpy.datetime64("2010-05-14", "ns"), numpy.timedelta64(1, "D")
+        numpy.datetime64("2010-05-12", "ns"),
+        numpy.datetime64("2010-05-14", "ns"),
+        numpy.timedelta64(1, "D"),
     )
     data = numpy.random.randn(len(time), len(latitude), len(longitude))
-    return mock_dataset(data=("data", data), dims=[("time", time), ("latitude", latitude), ("longitude", longitude)])
+    return mock_dataset(
+        data=("data", data),
+        dims=[("time", time), ("latitude", latitude), ("longitude", longitude)],
+    )

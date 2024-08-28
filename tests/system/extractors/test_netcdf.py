@@ -14,7 +14,9 @@ from tests.conftest import npdate
 class TestNetCDFExtractor:
     def test_extract(self, cache):
         cache = cache / "cpc" / "us_precip"
-        span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
+        span = Timespan(
+            npdate(1982, 11, 29), npdate(1984, 6, 25)
+        )  # Thriller, Purple Rain
         sources = CPCFetcher("us_precip", cache).fetch(span)
         extractor = NetCDFExtractor()
         zarr_jsons = list(itertools.chain(*map(extractor, sources)))
@@ -34,7 +36,9 @@ class TestNetCDFExtractor:
     def test_extract_w_output_folder(self, cache):
         cache = cache / "cpc" / "us_precip"
         output = cache / "zarr_jsons"
-        span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
+        span = Timespan(
+            npdate(1982, 11, 29), npdate(1984, 6, 25)
+        )  # Thriller, Purple Rain
         sources = CPCFetcher("us_precip", cache).fetch(span)
         extractor = NetCDFExtractor(output_folder=output)
         zarr_jsons = list(itertools.chain(*map(extractor, sources)))
@@ -62,7 +66,9 @@ class TestNetCDFExtractor:
         possible, we will probably most often want to cache data source files near where they will be used.
         """
         output = cache / "cpc" / "us_precip" / "zarr_jsons"
-        span = Timespan(npdate(1982, 11, 29), npdate(1984, 6, 25))  # Thriller, Purple Rain
+        span = Timespan(
+            npdate(1982, 11, 29), npdate(1984, 6, 25)
+        )  # Thriller, Purple Rain
         sources = CPCFetcher("us_precip").fetch(span)
         extractor = NetCDFExtractor(output_folder=output)
         zarr_jsons = list(itertools.chain(*map(extractor, sources)))

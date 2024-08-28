@@ -49,8 +49,12 @@ class IPLDLoader(Loader):
         )
 
         replace_dataset = replace_dataset.sel(**{self.time_dim: slice(*span)})
-        replace_dataset = replace_dataset.drop_vars([dim for dim in replace_dataset.dims if dim != self.time_dim])
-        replace_dataset.to_zarr(store=mapper, consolidated=True, region={self.time_dim: slice(*region)})
+        replace_dataset = replace_dataset.drop_vars(
+            [dim for dim in replace_dataset.dims if dim != self.time_dim]
+        )
+        replace_dataset.to_zarr(
+            store=mapper, consolidated=True, region={self.time_dim: slice(*region)}
+        )
 
         cid = mapper.freeze()
         self.publisher.publish(cid)
@@ -68,7 +72,9 @@ class IPLDLoader(Loader):
 
     def _time_to_integer(self, dataset, timestamp):
         # It seems like an oversight in xarray that this is the best way to do this.
-        nearest = dataset.sel(**{self.time_dim: timestamp, "method": "nearest"})[self.time_dim]
+        nearest = dataset.sel(**{self.time_dim: timestamp, "method": "nearest"})[
+            self.time_dim
+        ]
         return list(dataset[self.time_dim].values).index(nearest)
 
 

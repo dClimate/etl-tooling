@@ -11,12 +11,14 @@ from .conftest import HERE
 
 
 class TestPipeline:
-
     def test_from_yaml(self):
         pipeline = Pipeline.from_yaml(HERE / "etc" / "pipeline.yaml")
         assert isinstance(pipeline, Pipeline)
 
-        assert pipeline.fetcher.base_url == "http://example.com/datasets/price_of_tea_in_china"
+        assert (
+            pipeline.fetcher.base_url
+            == "http://example.com/datasets/price_of_tea_in_china"
+        )
         assert pipeline.fetcher.download_folder == "/opt/rawdata/price_of_tea_in_china"
         assert pipeline.extractor.foo == "bar"
         assert pipeline.combiner.arg == "value"
@@ -29,7 +31,10 @@ class TestPipeline:
         pipeline = Pipeline.from_yaml("etc/pipeline_no_transformer.yaml")
         assert isinstance(pipeline, Pipeline)
 
-        assert pipeline.fetcher.base_url == "http://example.com/datasets/price_of_tea_in_china"
+        assert (
+            pipeline.fetcher.base_url
+            == "http://example.com/datasets/price_of_tea_in_china"
+        )
         assert pipeline.fetcher.download_folder == "/opt/rawdata/price_of_tea_in_china"
         assert pipeline.extractor.foo == "bar"
         assert pipeline.combiner.arg == "value"
@@ -57,7 +62,9 @@ class TestPipeline:
 
         assert len(precip_global.transformer.transformers) == 2
         assert precip_global.transformer.transformers[0].__name__ == "rename_dims"
-        assert precip_global.transformer.transformers[1].__name__ == "normalize_longitudes"
+        assert (
+            precip_global.transformer.transformers[1].__name__ == "normalize_longitudes"
+        )
 
         assert isinstance(precip_global.loader, IPLDLoader)
         assert precip_global.loader.time_dim == "time"

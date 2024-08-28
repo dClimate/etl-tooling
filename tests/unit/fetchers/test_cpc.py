@@ -12,7 +12,6 @@ from ..conftest import mock_serialized_dataset, MockFilesystem
 
 
 class TestCPCFetcher:
-
     def test_constructor(self, mocker):
         fsspec = mocker.patch("dc_etl.fetchers.cpc.fsspec")
         fetcher = CPCFetcher("global_precip")
@@ -58,7 +57,9 @@ class TestCPCFetcher:
         assert "precip.V1.0.1972.nc" in prefetched
 
         # This time it should use the cache
-        fetcher = CPCFetcher("us_precip", cache)  # Bust functools.cache decorator on get_remote_timespan
+        fetcher = CPCFetcher(
+            "us_precip", cache
+        )  # Bust functools.cache decorator on get_remote_timespan
         span = fetcher.get_remote_timespan()
         assert span.start == numpy.datetime64("1970-01-01")
         assert span.end == numpy.datetime64("1972-12-31")
@@ -87,7 +88,8 @@ class TestCPCFetcher:
     def test_fetch(self, mockfs):
         fetcher = CPCFetcher("us_precip")
         span = Timespan(
-            numpy.datetime64("1971-05-12T00:00:00.000000000"), numpy.datetime64("1972-07-07T00:00:00.000000000")
+            numpy.datetime64("1971-05-12T00:00:00.000000000"),
+            numpy.datetime64("1972-07-07T00:00:00.000000000"),
         )
 
         files = list(fetcher.fetch(span))
@@ -174,7 +176,11 @@ def cpc_us_precip(year):
     lon = numpy.arange(230.125, 305, 0.25)
 
     time = numpy.arange(
-        numpy.datetime64(f"{year}-01-01", "ns"), numpy.datetime64(f"{year + 1}-01-01", "ns"), numpy.timedelta64(1, "D")
+        numpy.datetime64(f"{year}-01-01", "ns"),
+        numpy.datetime64(f"{year + 1}-01-01", "ns"),
+        numpy.timedelta64(1, "D"),
     )
     data = numpy.random.randn(len(time), len(lat), len(lon))
-    return mock_serialized_dataset(data=("precip", data), dims=[("time", time), ("lat", lat), ("lon", lon)])
+    return mock_serialized_dataset(
+        data=("precip", data), dims=[("time", time), ("lat", lat), ("lon", lon)]
+    )

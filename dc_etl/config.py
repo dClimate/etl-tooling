@@ -35,7 +35,9 @@ class _Configuration(collections.UserDict):
         value = self.get(key, _MISSING)
         if value is _MISSING:
             path = " -> ".join(self.path + [key])
-            raise errors.MissingConfigurationError(f"Missing required configuration from {self.config_file}: {path}")
+            raise errors.MissingConfigurationError(
+                f"Missing required configuration from {self.config_file}: {path}"
+            )
 
         return value
 
@@ -44,7 +46,10 @@ class _Configuration(collections.UserDict):
             return type(self)(value, self.config_file, path)
 
         elif isinstance(value, list):
-            return [self._wrap(value, path + [str(index)]) for index, value in enumerate(value)]
+            return [
+                self._wrap(value, path + [str(index)])
+                for index, value in enumerate(value)
+            ]
 
         return value
 

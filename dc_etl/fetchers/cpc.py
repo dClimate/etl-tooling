@@ -17,7 +17,10 @@ _GLOB = {
     "global_temp_max": ["/Datasets/cpc_global_temp/tmax.*.nc"],
     "global_temp_min": ["/Datasets/cpc_global_temp/tmin.*.nc"],
     # Oh come on, really?
-    "us_precip": ["/Datasets/cpc_us_precip/precip.V1.0.*.nc", "/Datasets/cpc_us_precip/RT/precip.V1.0.*.nc"],
+    "us_precip": [
+        "/Datasets/cpc_us_precip/precip.V1.0.*.nc",
+        "/Datasets/cpc_us_precip/RT/precip.V1.0.*.nc",
+    ],
 }
 
 _DATA_FILE = re.compile(r".+\.\d\d\d\d.nc")
@@ -37,7 +40,9 @@ class CPCFetcher(Fetcher):
     def __init__(self, dataset: str, cache: FileSpec | None = None):
         glob = _GLOB.get(dataset)
         if glob is None:
-            raise MissingConfigurationError(f"Unrecognized dataset: {dataset}, valid values are {', '.join(_GLOB)}")
+            raise MissingConfigurationError(
+                f"Unrecognized dataset: {dataset}, valid values are {', '.join(_GLOB)}"
+            )
 
         self._glob = glob
         self._cache = cache

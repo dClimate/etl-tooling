@@ -30,16 +30,22 @@ def main():
             output_folder=CACHE / "combined",
             concat_dims=["time"],
             identical_dims=["lat", "lon"],
-            preprocessors=[component.combine_preprocessor("fix_fill_value", -9.96921e36)],
+            preprocessors=[
+                component.combine_preprocessor("fix_fill_value", -9.96921e36)
+            ],
         ),
         transformer=component.transformer(
             "composite",
-            component.transformer("rename_dims", {"lat": "latitude", "lon": "longitude"}),
+            component.transformer(
+                "rename_dims", {"lat": "latitude", "lon": "longitude"}
+            ),
             component.transformer("normalize_longitudes"),
             component.transformer("compress", ["precip"]),
         ),
         loader=component.loader(
-            "ipld", time_dim="time", publisher=component.ipld_publisher("local_file", CACHE / "zarr_head.cid")
+            "ipld",
+            time_dim="time",
+            publisher=component.ipld_publisher("local_file", CACHE / "zarr_head.cid"),
         ),
     )
 

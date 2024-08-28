@@ -31,13 +31,16 @@ def mock_entry_point(*args, **config):
 
 
 class MockFilesystem:
-
     def __init__(self, contents: dict[str, bytes]):
         self.contents = contents
 
     def glob(self, glob):
         start, end = glob.split("*")
-        return [name for name in self.contents if name.startswith(start) and name.endswith(end)]
+        return [
+            name
+            for name in self.contents
+            if name.startswith(start) and name.endswith(end)
+        ]
 
     def open(self, path, mode="rb"):
         assert mode.endswith("b")

@@ -38,28 +38,6 @@ def cover(session):
 
 
 @nox.session(py=DEFAULT_INTERPRETER)
-def lint(session):
-    session.install("black", "flake8", "flake8-pyproject")
-    run_black(session, check=True)
-    session.run("flake8", CODE, "tests")
-
-
-@nox.session(py=DEFAULT_INTERPRETER)
-def blacken(session):
-    # Install all dependencies.
-    session.install("black")
-    run_black(session)
-
-
-def run_black(session, check=False):
-    args = ["black"]
-    if check:
-        args.append("--check")
-    args.extend(["noxfile.py", CODE, "tests"])
-    session.run(*args)
-
-
-@nox.session(py=DEFAULT_INTERPRETER)
 def system(session):
     # if not check_kubo():
     #     session.skip("No IPFS server running")

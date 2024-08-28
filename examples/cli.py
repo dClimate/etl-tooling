@@ -64,7 +64,10 @@ def main(pipeline: Pipeline):
 
         else:
             dataset = pipeline.loader.dataset()
-            code.interact("Interactive Python shell. The dataset is available as 'ds'.", local={"ds": dataset})
+            code.interact(
+                "Interactive Python shell. The dataset is available as 'ds'.",
+                local={"ds": dataset},
+            )
 
     except:
         if args["--pdb"]:
@@ -78,7 +81,9 @@ def run_pipeline(pipeline, span, load):
         f"to {span.end.astype('<M8[s]').astype(object):%Y-%m-%d}"
     )
     sources = pipeline.fetcher.fetch(span)
-    extracted = list(itertools.chain(*[pipeline.extractor(source) for source in sources]))
+    extracted = list(
+        itertools.chain(*[pipeline.extractor(source) for source in sources])
+    )
     combined = pipeline.transformer(pipeline.combiner(extracted))
     load(combined, span)
 
@@ -109,4 +114,6 @@ def _add_delta(timestamp, delta):
     timestamp = timestamp + delta
 
     # We only need to the day precision for these examples
-    return numpy.datetime64(f"{timestamp.year}-{timestamp.month:02d}-{timestamp.day:02d}")
+    return numpy.datetime64(
+        f"{timestamp.year}-{timestamp.month:02d}-{timestamp.day:02d}"
+    )

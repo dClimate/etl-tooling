@@ -13,7 +13,9 @@ from tests.unit.conftest import mock_dataset
 class TestIPLDLoader:
     def test__from_config(self):
         config = _Configuration(
-            {"time_dim": "nation time", "publisher": {"name": "testing", "foo": "bar"}}, "some/file", []
+            {"time_dim": "nation time", "publisher": {"name": "testing", "foo": "bar"}},
+            "some/file",
+            [],
         )
         loader = IPLDLoader._from_config(config)
         assert loader.time_dim == "nation time"
@@ -52,7 +54,9 @@ class TestIPLDLoader:
         loader.append(dataset, span)
 
         dataset.sel.assert_called_once_with(tempo=slice(*span))
-        selected.to_zarr.assert_called_once_with(store=mapper, consolidated=True, append_dim="tempo")
+        selected.to_zarr.assert_called_once_with(
+            store=mapper, consolidated=True, append_dim="tempo"
+        )
         mapper.freeze.assert_called_once_with()
         publisher.publish.assert_called_once_with("contentid")
         loader._mapper.assert_called_once_with(publisher.retrieve.return_value)
@@ -81,7 +85,9 @@ class TestIPLDLoader:
 
         dataset.sel.assert_called_once_with(tempo=slice(*span))
         selected.drop_vars.assert_called_once_with(["one", "two"])
-        dropped.to_zarr.assert_called_once_with(store=mapper, consolidated=True, region={"tempo": slice(84, 107)})
+        dropped.to_zarr.assert_called_once_with(
+            store=mapper, consolidated=True, region={"tempo": slice(84, 107)}
+        )
         mapper.freeze.assert_called_once_with()
         publisher.publish.assert_called_once_with("contentid")
         loader._mapper.assert_called_once_with(publisher.retrieve.return_value)
@@ -127,7 +133,9 @@ class TestIPLDLoader:
 @pytest.fixture
 def dataset():
     time = numpy.arange(
-        numpy.datetime64("2000-01-01", "ns"), numpy.datetime64("2001-01-01", "ns"), numpy.timedelta64(1, "D")
+        numpy.datetime64("2000-01-01", "ns"),
+        numpy.datetime64("2001-01-01", "ns"),
+        numpy.timedelta64(1, "D"),
     )
     data = numpy.random.randn(len(time))
     return mock_dataset(data=("data", data), dims=[("tempo", time)])
