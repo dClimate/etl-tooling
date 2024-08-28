@@ -33,6 +33,26 @@ dependencies = [
     "xarray[io,parallel]",
 ]
 
+[project.optional-dependencies]
+testing = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+]
+dev = [
+    "ruff"
+]
+doc = [
+    "sphinx",
+]
+examples = [
+    "docopt",
+    "python-dateutil",
+]
+all = [
+    "dc-etl[dev,testing,doc,examples]",
+]
+
 [project.urls]
 Homepage = "https://www.dclimate.net/"
 
@@ -70,35 +90,7 @@ testing = "tests.unit.conftest:mock_entry_point"
 local_file = "dc_etl.ipld.local_file:LocalFileIPLDPublisher"
 testing = "tests.unit.conftest:mock_entry_point"
 
-[project.optional-dependencies]
-testing = [
-    "pytest",
-    "pytest-cov",
-    "pytest-mock",
-]
-dev = [
-    "ruff"
-]
-doc = [
-    "sphinx",
-]
-examples = [
-    "docopt",
-    "python-dateutil",
-]
-all = [
-    "dc-etl[dev,testing,doc,examples]",
-]
-
 [tool.setuptools_scm]
 version_scheme = "post-release"
 local_scheme = "no-local-version"
 write_to = "dc_etl/_version.py"
-
-[tool.black]
-line-length = 119
-
-[tool.flake8]
-# flake8 and black disagree on E203, E701, and W503
-ignore = ["E203", "E701", "W503"]
-max-line-length = 119
