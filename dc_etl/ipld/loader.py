@@ -23,7 +23,7 @@ class IPLDLoader(Loader):
         self.time_dim = time_dim
         self.publisher = publisher
 
-    def initial(self, dataset: xarray.Dataset, span: Timespan | None = None):
+    def initial(self, dataset: xarray.Dataset, span: Timespan | None = None, **kwargs):
         """Start writing a new dataset."""
         mapper = self._mapper()
         dataset = dataset.sel(**{self.time_dim: slice(*span)})
@@ -31,7 +31,7 @@ class IPLDLoader(Loader):
         cid = mapper.freeze()
         self.publisher.publish(cid)
 
-    def append(self, dataset: xarray.Dataset, span: Timespan | None = None):
+    def append(self, dataset: xarray.Dataset, span: Timespan | None = None, **kwargs):
         """Append data to an existing dataset."""
         mapper = self._mapper(self.publisher.retrieve())
         dataset = dataset.sel(**{self.time_dim: slice(*span)})
@@ -39,7 +39,7 @@ class IPLDLoader(Loader):
         cid = mapper.freeze()
         self.publisher.publish(cid)
 
-    def replace(self, replace_dataset: xarray.Dataset, span: Timespan | None = None):
+    def replace(self, replace_dataset: xarray.Dataset, span: Timespan | None = None, **kwargs):
         """Replace a contiguous span of data in an existing dataset."""
         mapper = self._mapper(self.publisher.retrieve())
         original_dataset = self.dataset()

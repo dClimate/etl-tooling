@@ -7,7 +7,7 @@ class Transformer(abc.ABC):
     """Performs a transformation on a dataset."""
 
     @abc.abstractmethod
-    def __call__(self, dataset: xarray.Dataset) -> xarray.Dataset:
+    def __call__(self, dataset: xarray.Dataset, **kwargs) -> xarray.Dataset:
         """Performs a transformation on a dataset.
 
         Parameters

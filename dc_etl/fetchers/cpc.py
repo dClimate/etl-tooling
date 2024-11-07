@@ -69,20 +69,20 @@ class CPCFetcher(Fetcher):
         return sorted(files, key=_year)
 
     @functools.cache
-    def get_remote_timespan(self) -> Timespan:
+    def get_remote_timespan(self, **kwargs) -> Timespan:
         """Implementation of :meth:`Fetcher.get_remote_timespan`"""
         files = self._get_remote_files()
         first = xarray.open_dataset(self._get_file_by_path(files[0]).open())
         last = xarray.open_dataset(self._get_file_by_path(files[-1]).open())
         return Timespan(first.time[0].values, last.time[-1].values)
 
-    def prefetch(self, span: Timespan):
+    def prefetch(self, span: Timespan, **kwargs):
         """Implementation of :meth:`Fetcher.pre_fetch`"""
         if self._cache:
             for _ in self.fetch(span):
                 pass
 
-    def fetch(self, span: Timespan) -> Generator[FileSpec, None, None]:
+    def fetch(self, span: Timespan, **kwargs) -> Generator[FileSpec, None, None]:
         """Implementation of :meth:`Fetcher.fetch`"""
         start = span.start.astype("<M8[ms]").astype(object).year
         end = span.end.astype("<M8[ms]").astype(object).year

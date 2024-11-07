@@ -34,6 +34,11 @@ dependencies = [
 [project.urls]
 Homepage = "https://www.dclimate.net/"
 
+
+[project.entry-points.assessor]
+default = "dc_etl.assessors.default:DefaultAssessor"
+testing = "tests.unit.conftest:mock_entry_point"
+
 [project.entry-points.fetcher]
 cpc = "dc_etl.fetchers.cpc:CPCFetcher"
 testing = "tests.unit.conftest:mock_entry_point"

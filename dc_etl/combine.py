@@ -85,7 +85,7 @@ class DefaultCombiner(Combiner):
         self.preprocessors = preprocessors
         self.postprocessors = postprocessors
 
-    def __call__(self, sources: list[FileSpec]) -> xarray.Dataset:
+    def __call__(self, sources: list[FileSpec], **kwargs) -> xarray.Dataset:
         """Implementation of meth:`Combiner.__call__`.
 
         Calls `kerchunk.MultiZarrToZarr`.

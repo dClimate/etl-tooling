@@ -28,10 +28,9 @@ class Composite:
     def __init__(self, *transformers: Transformer):
         self.transformers = transformers
 
-    def __call__(self, dataset: xarray.Dataset) -> xarray.Dataset:
+    def __call__(self, dataset: xarray.Dataset, **kwargs) -> xarray.Dataset:
         for transform in self.transformers:
-            dataset = transform(dataset)
-
+            dataset = transform(dataset, **kwargs)
         return dataset
 
 
@@ -49,7 +48,7 @@ def rename_dims(names: dict[str, str]) -> Transformer:
         A Transformer instance that will do the renaming.
     """
 
-    def rename_dims(dataset: xarray.Dataset) -> xarray.Dataset:
+    def rename_dims(dataset: xarray.Dataset, **kwargs) -> xarray.Dataset:
         return dataset.rename(names)
 
     return rename_dims
@@ -64,7 +63,7 @@ def normalize_longitudes() -> Transformer:
         The transformer.
     """
 
-    def normalize_longitudes(dataset: xarray.Dataset) -> xarray.Dataset:
+    def normalize_longitudes(dataset: xarray.Dataset, **kwargs) -> xarray.Dataset:
         dataset = dataset.assign_coords(longitude=(((dataset.longitude + 180) % 360) - 180))
 
         # After converting, the longitudes may still start at zero. This reorders the longitude coordinates from -180
@@ -88,7 +87,7 @@ def compress(variables: list[str]) -> Transformer:
         The transformer.
     """
 
-    def compress(dataset: xarray.Dataset) -> xarray.Dataset:
+    def compress(dataset: xarray.Dataset, **kwargs) -> xarray.Dataset:
         for var in variables:
             dataset[var].encoding["compressor"] = numcodecs.Blosc()
 

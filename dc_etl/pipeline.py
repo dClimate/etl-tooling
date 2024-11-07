@@ -9,6 +9,7 @@ from dc_etl.fetch import Fetcher
 from dc_etl.filespec import FileSpec, file
 from dc_etl.load import Loader
 from dc_etl.transform import Transformer, identity
+from dc_etl.assessor import Assessor
 
 
 class Pipeline:
@@ -16,6 +17,8 @@ class Pipeline:
 
     Parameters
     ----------
+    assessor: Assessor
+        The assessor used to determine if a dataset is worth processing.
     fetcher: Fetcher
         The fetcher to use to get data from the source provider.
     extractor: Extractor
@@ -39,6 +42,7 @@ class Pipeline:
 
     @classmethod
     def _from_config(cls, config: _Configuration) -> Pipeline:
+        assessor = config["assessor"].as_component("assessor")
         fetcher = config["fetcher"].as_component("fetcher")
         extractor = config["extractor"].as_component("extractor")
         combiner = config["combiner"].as_component("combiner")
@@ -48,11 +52,12 @@ class Pipeline:
             transformer = identity
         loader = config["loader"].as_component("loader")
 
-        return Pipeline(fetcher, extractor, combiner, transformer, loader)
+        return Pipeline(assessor, fetcher, extractor, combiner, transformer, loader)
 
     def __init__(
-        self, fetcher: Fetcher, extractor: Extractor, combiner: Combiner, transformer: Transformer, loader: Loader
+        self, assessor: Assessor, fetcher: Fetcher, extractor: Extractor, combiner: Combiner, transformer: Transformer, loader: Loader
     ):
+        self.assessor = assessor
         self.fetcher = fetcher
         self.extractor = extractor
         self.combiner = combiner

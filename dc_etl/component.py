@@ -5,7 +5,19 @@ from .config import _get_component
 from .extract import Extractor
 from .fetch import Fetcher
 from .transform import Transformer
+from .assessor import Assessor
 
+def assessor(name: str, *args, **kwargs) -> Assessor:
+    """Get and configure a assessor implementation by name.
+
+    Parameters
+    ----------
+    name : str
+        The registered name of the assessor implementation to get and configure.
+    **kwargs :
+        Any extra keyword arguments are passed to the implementation entry point to get an instance.
+    """
+    return _get_component("assessor", name, args, kwargs)
 
 def fetcher(name: str, *args, **kwargs) -> Fetcher:
     """Get and configure a fetcher implementation by name.
