@@ -77,6 +77,7 @@ def run_pipeline(pipeline, span, load):
         f"Loading {span.start.astype('<M8[s]').astype(object):%Y-%m-%d} "
         f"to {span.end.astype('<M8[s]').astype(object):%Y-%m-%d}"
     )
+    pipeline.assessor.start()
     sources = pipeline.fetcher.fetch(span)
     extracted = list(itertools.chain(*[pipeline.extractor(source) for source in sources]))
     combined = pipeline.transformer(pipeline.combiner(extracted))

@@ -55,7 +55,13 @@ class Pipeline:
         return Pipeline(assessor, fetcher, extractor, combiner, transformer, loader)
 
     def __init__(
-        self, assessor: Assessor, fetcher: Fetcher, extractor: Extractor, combiner: Combiner, transformer: Transformer, loader: Loader
+        self,
+        assessor: Assessor,
+        fetcher: Fetcher,
+        extractor: Extractor,
+        combiner: Combiner,
+        transformer: Transformer,
+        loader: Loader,
     ):
         self.assessor = assessor
         self.fetcher = fetcher
