@@ -1,6 +1,4 @@
-
 from dc_etl import component
-
 
 
 class TestDefaultAssessor:
