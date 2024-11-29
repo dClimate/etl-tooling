@@ -23,7 +23,7 @@ def fix_fill_value(fill_value) -> CombinePreprocessor:
         A preprocessor instance that can set the fill value.
     """
 
-    def fix_fill_value(refs):
+    def fix_fill_value(refs, **kwargs):
         ref_names = set()
         file_match_pattern = "(.*?)/"
         for ref in refs:

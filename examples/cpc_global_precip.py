@@ -5,7 +5,6 @@ This example uses the imperative config option, which allows you to construct a 
 that uses a YAML config file instead of Python code, see the CPC US Precipitation example.
 """
 
-import os
 import pathlib
 
 from dc_etl import filespec, component
@@ -23,6 +22,7 @@ def main():
     Other than how they're configured, the two examples aren't particularly different, so we use the same command
     line interface code for both."""
     pipeline = Pipeline(
+        assessor=component.assessor("default"),
         fetcher=component.fetcher("cpc", dataset="global_precip", cache=CACHE),
         extractor=component.extractor("netcdf"),
         combiner=component.combiner(

@@ -1,4 +1,6 @@
 ---
+assessor:
+  name: default
 fetcher:
   name: cpc
   dataset: us_precip
