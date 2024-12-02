@@ -23,7 +23,7 @@ requires-python = ">=3.10"
 dependencies = [
     "fsspec",
     "kerchunk[hdf]",
-    "ipldstore @ git+https://github.com/dClimate/ipldstore.git",
+    "py-hamt @ git+https://github.com/dClimate/py-hamt.git@version2",
     "numcodecs",
     "numpy",
     "orjson",

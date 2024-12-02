@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import abc
 
-import ipldstore
 import xarray
+from py_hamt import HAMT, IPFSStore
 
 from multiformats import CID
 
@@ -61,9 +61,7 @@ class IPLDLoader(Loader):
         return xarray.open_zarr(store=mapper, consolidated=True)
 
     def _mapper(self, root=None):
-        mapper = ipldstore.get_ipfs_mapper()
-        if root is not None:
-            mapper.set_root(root)
+        mapper = HAMT(store=IPFSStore(), root_node_id=root)
         return mapper
 
     def _time_to_integer(self, dataset, timestamp):
