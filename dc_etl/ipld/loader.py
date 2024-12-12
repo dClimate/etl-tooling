@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import abc
 
-import ipldstore
 import xarray
+from py_hamt import HAMT, IPFSStore
 
 from multiformats import CID
 
@@ -28,7 +28,7 @@ class IPLDLoader(Loader):
         mapper = self._mapper()
         dataset = dataset.sel(**{self.time_dim: slice(*span)})
         dataset.to_zarr(store=mapper, consolidated=True)
-        cid = mapper.freeze()
+        cid = mapper.root_node_id
         self.publisher.publish(cid)
 
     def append(self, dataset: xarray.Dataset, span: Timespan | None = None, **kwargs):
@@ -36,7 +36,7 @@ class IPLDLoader(Loader):
         mapper = self._mapper(self.publisher.retrieve())
         dataset = dataset.sel(**{self.time_dim: slice(*span)})
         dataset.to_zarr(store=mapper, consolidated=True, append_dim=self.time_dim)
-        cid = mapper.freeze()
+        cid = mapper.root_node_id
         self.publisher.publish(cid)
 
     def replace(self, replace_dataset: xarray.Dataset, span: Timespan | None = None, **kwargs):
@@ -52,7 +52,7 @@ class IPLDLoader(Loader):
         replace_dataset = replace_dataset.drop_vars([dim for dim in replace_dataset.dims if dim != self.time_dim])
         replace_dataset.to_zarr(store=mapper, consolidated=True, region={self.time_dim: slice(*region)})
 
-        cid = mapper.freeze()
+        cid = mapper.root_node_id
         self.publisher.publish(cid)
 
     def dataset(self) -> xarray.Dataset:
@@ -61,9 +61,7 @@ class IPLDLoader(Loader):
         return xarray.open_zarr(store=mapper, consolidated=True)
 
     def _mapper(self, root=None):
-        mapper = ipldstore.get_ipfs_mapper()
-        if root is not None:
-            mapper.set_root(root)
+        mapper = HAMT(store=IPFSStore(), root_node_id=root)
         return mapper
 
     def _time_to_integer(self, dataset, timestamp):

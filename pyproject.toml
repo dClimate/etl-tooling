@@ -19,11 +19,11 @@ classifiers = [
 description = "Tools for loading climate data into IPFS clusters"
 readme = "README.rst"
 keywords = ["Climate", "Zarr", "ETL", "IPFS"]
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "fsspec",
     "kerchunk[hdf]",
-    "ipldstore @ git+https://github.com/dClimate/ipldstore.git",
+    "py-hamt @ git+https://github.com/dClimate/py-hamt.git",
     "numcodecs",
     "numpy",
     "orjson",

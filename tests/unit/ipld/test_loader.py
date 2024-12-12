@@ -26,7 +26,7 @@ class TestIPLDLoader:
         span = (42, 53)
 
         selected = dataset.sel.return_value
-        mapper.freeze.return_value = "contentid"
+        mapper.root_node_id = "contentid"
 
         loader = IPLDLoader(time_dim="tempo", publisher=publisher)
         loader._mapper = mock.Mock(return_value=mapper)
@@ -34,7 +34,6 @@ class TestIPLDLoader:
 
         dataset.sel.assert_called_once_with(tempo=slice(*span))
         selected.to_zarr.assert_called_once_with(store=mapper, consolidated=True)
-        mapper.freeze.assert_called_once_with()
         publisher.publish.assert_called_once_with("contentid")
         loader._mapper.assert_called_once_with()
 
@@ -45,7 +44,7 @@ class TestIPLDLoader:
         span = (42, 53)
 
         selected = dataset.sel.return_value
-        mapper.freeze.return_value = "contentid"
+        mapper.root_node_id = "contentid"
 
         loader = IPLDLoader(time_dim="tempo", publisher=publisher)
         loader._mapper = mock.Mock(return_value=mapper)
@@ -53,7 +52,6 @@ class TestIPLDLoader:
 
         dataset.sel.assert_called_once_with(tempo=slice(*span))
         selected.to_zarr.assert_called_once_with(store=mapper, consolidated=True, append_dim="tempo")
-        mapper.freeze.assert_called_once_with()
         publisher.publish.assert_called_once_with("contentid")
         loader._mapper.assert_called_once_with(publisher.retrieve.return_value)
 
@@ -71,7 +69,7 @@ class TestIPLDLoader:
         selected = dataset.sel.return_value
         selected.dims = ["one", "tempo", "two"]
         dropped = selected.drop_vars.return_value
-        mapper.freeze.return_value = "contentid"
+        mapper.root_node_id = "contentid"
 
         loader = IPLDLoader(time_dim="tempo", publisher=publisher)
         loader._mapper = mock.Mock(return_value=mapper)
@@ -82,7 +80,6 @@ class TestIPLDLoader:
         dataset.sel.assert_called_once_with(tempo=slice(*span))
         selected.drop_vars.assert_called_once_with(["one", "two"])
         dropped.to_zarr.assert_called_once_with(store=mapper, consolidated=True, region={"tempo": slice(84, 107)})
-        mapper.freeze.assert_called_once_with()
         publisher.publish.assert_called_once_with("contentid")
         loader._mapper.assert_called_once_with(publisher.retrieve.return_value)
 
@@ -101,23 +98,13 @@ class TestIPLDLoader:
         publisher.retrieve.assert_called_once_with()
         xarray.open_zarr.assert_called_once_with(store=mapper, consolidated=True)
 
-    def test__mapper_no_root(self, mocker):
-        ipldstore = mocker.patch("dc_etl.ipld.loader.ipldstore")
-        mapper = ipldstore.get_ipfs_mapper.return_value
-
-        loader = IPLDLoader(time_dim="tempo", publisher=None)
-        assert loader._mapper() is mapper
-        ipldstore.get_ipfs_mapper.assert_called_once_with()
-        mapper.set_root.assert_not_called()
-
     def test__mapper_w_root(self, mocker):
-        ipldstore = mocker.patch("dc_etl.ipld.loader.ipldstore")
-        mapper = ipldstore.get_ipfs_mapper.return_value
+        HAMT = mocker.patch("dc_etl.ipld.loader.HAMT")
+        IPFSStore = mocker.patch("dc_etl.ipld.loader.IPFSStore")
+        mapper = HAMT(store=IPFSStore())
 
         loader = IPLDLoader(time_dim="tempo", publisher=None)
         assert loader._mapper("potato") is mapper
-        ipldstore.get_ipfs_mapper.assert_called_once_with()
-        mapper.set_root.assert_called_once_with("potato")
 
     def test__time_to_integer(self, dataset):
         loader = IPLDLoader(time_dim="tempo", publisher=None)
